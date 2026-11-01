@@ -1,5 +1,5 @@
 /* Dodara service worker — fast repeat visits */
-const V = "dodara-v12";
+const V = "dodara-v13";
 const CORE = ["/", "/style.css", "/app.js", "/config.js", "/page.css", "/theme.css", "/assets/hero3d-v2.js", "/assets/fluid.js", "/assets/fonts/nastaliq-fa.woff2", "/assets/3d/front.webp", "/assets/3d/right.webp", "/assets/3d/back.webp", "/assets/3d/top.webp", "/assets/icon-192.png", "/assets/logo-full.webp", "/assets/logo.webp", "/assets/fonts/vazirmatn-400.woff2", "/assets/fonts/vazirmatn-900.woff2"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
