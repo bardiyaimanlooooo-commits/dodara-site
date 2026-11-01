@@ -39,7 +39,7 @@ let cart = ls.get("dd_cart", {});
 const P = id => S.products.find(x => x.id === id);
 const saveCart = () => { ls.set("dd_cart", cart); badge(); };
 const badge = () => {
-  const n = Object.values(cart).reduce((a, b) => a + b, 0); const e = $("#cn"); e.textContent = n ? fa(n) : ""; e.dataset.n = n;
+  const n = Object.values(cart).reduce((a, b) => a + b, 0); $$("#cn,#cn2").forEach(e => { e.textContent = n ? fa(n) : ""; e.dataset.n = n; });
   const bar = $("#cbar"); if (!bar) return;
   const tot = Object.keys(cart).reduce((a, id) => a + (P(id) ? P(id).price * cart[id] : 0), 0);
   bar.classList.toggle("on", n > 0 && !!tot); $("#cbN").textContent = fa(n); $("#cbT").textContent = money(tot) + " تومان";
@@ -59,12 +59,23 @@ $$(".ov").forEach(o => o.addEventListener("click", e => { if (e.target === o) cl
 const priceHtml = p => `${money(p.price)} <small>تومان</small>${p.oldPrice && p.oldPrice > p.price ? `<span class="old">${money(p.oldPrice)}</span>` : ""}`;
 const card = p => `<a class="card" href="/p/${encodeURIComponent(p.id)}" data-p="${esc(p.id)}"><div class="ph"><img loading="lazy" decoding="async" width="400" height="500" src="${esc(thumb0(p))}" alt="${esc(p.name)}">${off(p) ? `<span class="offb">٪${fa(off(p))}</span>` : ""}${p.stock === false ? `<span class="oos">ناموجود</span>` : `<button class="add" data-add="${esc(p.id)}" aria-label="افزودن به سبد"><svg class="i"><use href="#plus"/></svg></button>`}</div><h3>${esc(p.name)}</h3><span class="w">${esc(p.weight || "")}</span><span class="pr">${priceHtml(p)}</span></a>`;
 
+const goArrow = `<svg class="i"><use href="#ic-arrow"/></svg>`;
+/* shown while the store has no categories yet — each tile opens the support chat */
+const DEF_CATS = [
+  { name: "الفاخر اصل", sub: "تنباکو قلیان پلمب", art: ART.tin },
+  { name: "تنباکو قلیان", sub: "طعم‌های میوه‌ای و کلاسیک", art: ART.pack },
+  { name: "ویپ یکبارمصرف", sub: "طعم‌های متنوع", art: ART.vape },
+  { name: "پاد", sub: "سیستم پاد و کارتریج", art: ART.pod },
+  { name: "زغال و لوازم", sub: "لوازم جانبی قلیان", art: ART.acc }
+];
 function render() {
   const cats = S.categories, prods = S.products;
   let feat = prods.filter(p => p.featured);
   if (!feat.length) feat = prods.slice(0, 6);
-  $("#rail").innerHTML = feat.length ? feat.slice(0, 10).map(card).join("") : `<div class="note" style="flex:1">محصولات به‌زودی اضافه می‌شوند.</div>`;
-  $("#bento").innerHTML = cats.map((c, i) => `<a class="tile${i === 0 ? " big" : ""}" href="#sec-${esc(c.id)}"><img src="${esc(catArt(c))}" alt=""><b>${esc(c.name)}</b><small>${fa(prods.filter(p => p.cat === c.id).length)} محصول</small></a>`).join("");
+  $("#rail").innerHTML = feat.length ? feat.slice(0, 10).map(card).join("") : `<div class="note"><b>محصولات به‌زودی اضافه می‌شوند</b>برای استعلام قیمت و موجودی، همین حالا از پشتیبانی بپرسید.<button class="b2" data-open-chat><svg class="i"><use href="#ic-chat"/></svg>گفتگو با پشتیبانی</button></div>`;
+  $("#bento").innerHTML = cats.length
+    ? cats.map((c, i) => `<a class="tile${i === 0 ? " big" : ""}" href="#sec-${esc(c.id)}"><span class="halo"></span><img src="${esc(catArt(c))}" alt="" loading="lazy"><b>${esc(c.name)}</b><small>${fa(prods.filter(p => p.cat === c.id).length)} محصول</small><span class="go">مشاهده${goArrow}</span></a>`).join("")
+    : DEF_CATS.map((c, i) => `<button class="tile${i === 0 ? " big" : ""}" data-open-chat><span class="halo"></span><img src="${esc(c.art)}" alt="" loading="lazy"><b>${esc(c.name)}</b><small>${esc(c.sub)}</small><span class="go">استعلام موجودی${goArrow}</span></button>`).join("");
   $("#shop").innerHTML = cats.map(c => {
     const l = prods.filter(p => p.cat === c.id); if (!l.length) return "";
     return `<section class="sec" id="sec-${esc(c.id)}"><div class="st"><h2>${esc(c.name)}</h2>${l.length > 4 ? `<a href="/c/${encodeURIComponent(c.id)}" data-all="${esc(c.id)}">مشاهده همه<svg class="i" style="width:16px;height:16px"><use href="#ic-arrow"/></svg></a>` : ""}</div><div class="grid">${l.slice(0, 4).map(card).join("")}</div></section>`;
@@ -74,12 +85,12 @@ function render() {
 
 async function load() {
   if (S.products.length || S.categories.length) render();
-  if (!API || API.includes("YOUR-SUBDOMAIN")) { if (!S.categories.length) $("#rail").innerHTML = `<div class="note" style="flex:1">آدرس API در config.js تنظیم نشده است.</div>`; return; }
+  if (!API || API.includes("YOUR-SUBDOMAIN")) { if (!S.categories.length) { render(); $("#rail").innerHTML = `<div class="note">آدرس API در config.js تنظیم نشده است.</div>`; } return; }
   try {
     const d = await api("/api/store");
     S = d; ls.set("dd_store", S); cleanCart(); render(); openFromHash();
   } catch (e) {
-    if (!S.categories.length) $("#rail").innerHTML = `<div class="note" style="flex:1">اتصال برقرار نشد. صفحه را دوباره باز کنید.</div>`;
+    if (!S.categories.length) { render(); $("#rail").innerHTML = `<div class="note"><b>اتصال برقرار نشد</b>صفحه را دوباره باز کنید یا با پشتیبانی در تماس باشید.</div>`; }
   }
 }
 function openFromHash() { const m = location.hash.match(/^#buy-(.+)$/); if (m && P(decodeURIComponent(m[1]))) { history.replaceState(null, "", location.pathname); showProd(decodeURIComponent(m[1])); } }
@@ -289,74 +300,54 @@ async function uploadImg(file) {
 
 /* ---------- reveal + tilt ---------- */
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("shown"); io.unobserve(e.target); } }), { threshold: .12 });
-function reveal() { $$(".sec .st,.sec .grid,.bento,.about,.q,footer").forEach(el => { if (!el.classList.contains("rv")) { el.classList.add("rv"); io.observe(el); } }); }
-document.addEventListener("click", e => { const a = e.target.closest("[data-add],#qa"); if (a) { a.classList.remove("pop"); void a.offsetWidth; a.classList.add("pop"); const c = $("#cn"); c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump"); } }, true);
+function reveal() { $$(".sec .st,.sec .grid,.bento,.about,.q,footer,.steps,.stats,.posts").forEach(el => { if (!el.classList.contains("rv")) { el.classList.add("rv"); io.observe(el); } }); }
+document.addEventListener("click", e => { const a = e.target.closest("[data-add],#qa"); if (a) { a.classList.remove("pop"); void a.offsetWidth; a.classList.add("pop"); $$("#cn,#cn2").forEach(c => { c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump"); }); } }, true);
+const finePointer = matchMedia("(hover:hover) and (pointer:fine)").matches && !matchMedia("(prefers-reduced-motion:reduce)").matches;
 function bindTilt() {
-  document.querySelectorAll(".card:not([data-t])").forEach(el => {
+  if (!finePointer) return;
+  document.querySelectorAll(".card:not([data-t]),.tile:not([data-t])").forEach(el => {
     el.dataset.t = 1; el.classList.add("tilt");
-    el.addEventListener("pointermove", e => { if (e.pointerType !== "mouse") return; const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height; el.classList.add("t-on"); el.style.transform = `perspective(700px) rotateY(${(px - .5) * 14}deg) rotateX(${(.5 - py) * 14}deg) translateZ(6px)`; el.style.setProperty("--gx", px * 100 + "%"); el.style.setProperty("--gy", py * 100 + "%"); });
-    el.addEventListener("pointerleave", () => { el.classList.remove("t-on"); el.style.transform = ""; });
+    const tile = el.classList.contains("tile"), deg = tile ? 9 : 14;
+    el.addEventListener("pointermove", e => {
+      if (e.pointerType !== "mouse") return;
+      const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      el.classList.add("t-on");
+      el.style.transform = `perspective(800px) rotateY(${(px - .5) * deg}deg) rotateX(${(.5 - py) * deg}deg) translateZ(6px)`;
+      el.style.setProperty("--gx", px * 100 + "%"); el.style.setProperty("--gy", py * 100 + "%");
+      el.style.setProperty("--mx", px * 100 + "%"); el.style.setProperty("--my", py * 100 + "%");
+      el.style.setProperty("--px", (px - .5) * 2); el.style.setProperty("--py", (py - .5) * 2);
+    });
+    el.addEventListener("pointerleave", () => { el.classList.remove("t-on"); el.style.transform = ""; el.style.setProperty("--px", 0); el.style.setProperty("--py", 0); });
   });
 }
 
-/* ---------- pause animations when hero is off-screen (speed + battery) ---------- */
-let heroOn = true;
-new IntersectionObserver(es => { heroOn = es[0].isIntersecting; }).observe(document.querySelector(".hero"));
-const idle = () => !heroOn || document.hidden;
+/* ---------- featured rail arrows ---------- */
+const rail = $("#rail");
+const railStep = dir => rail.scrollBy({ left: dir * Math.max(200, rail.clientWidth * .8) });
+$("#rNext").onclick = () => railStep(-1);   // RTL: "next" moves toward the left
+$("#rPrev").onclick = () => railStep(1);
 
-/* ---------- hero 3D tin ---------- */
+/* ---------- scroll: progress bar + auto-hiding header ---------- */
 (function () {
-  const box = $("#box"), wrap = $("#tin3d"); if (!box) return;
-  const faces = [...box.querySelectorAll(".fc")], top = box.querySelector(".tp");
-  const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
-  let ry = -30, rx = -14, vy = reduce ? 0 : .35, auto = reduce ? 0 : .35, drag = false, lx = 0, ly = 0, lt = 0, src = null, moved = 0; const tx = -14;
-  function paint() {
-    box.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
-    faces.forEach((f, i) => { const c = Math.cos((ry + i * 90) * Math.PI / 180); f.style.filter = `brightness(${(.35 + .75 * Math.max(0, c)).toFixed(3)})`; });
-    top.style.filter = `brightness(${(.7 + Math.min(.5, -rx / 40)).toFixed(3)})`;
-  }
-  (function loop() { if (idle() && !drag) return setTimeout(loop, 400); if (!drag) { vy += (auto - vy) * .02; ry += vy; rx += (tx - rx) * .06; } paint(); requestAnimationFrame(loop); })();
-  const start = (x, y, k) => { if (drag) return; src = k; drag = true; moved = 0; lx = x; ly = y; lt = performance.now(); vy = 0; wrap.classList.add("used"); };
-  const move = (x, y, k) => { if (!drag || k !== src) return; const dx = x - lx, dy = y - ly, now = performance.now(); moved += Math.abs(dx) + Math.abs(dy); ry += dx * .9 + dy * .25; rx = Math.max(-40, Math.min(20, rx - dy * .4)); vy = (dx * .9 + dy * .25) / Math.max(1, (now - lt) / 16); lx = x; ly = y; lt = now; };
-  const up = k => { if (!drag || k !== src) return; drag = false; src = null; vy = moved < 6 ? 18 : Math.max(-25, Math.min(25, vy)); };
-  const T = e => e.touches[0] || e.changedTouches[0];
-  wrap.addEventListener("touchstart", e => { e.preventDefault(); const t = T(e); start(t.clientX, t.clientY, "t"); }, { passive: false });
-  wrap.addEventListener("touchmove", e => { e.preventDefault(); const t = T(e); move(t.clientX, t.clientY, "t"); }, { passive: false });
-  wrap.addEventListener("touchend", () => up("t")); wrap.addEventListener("touchcancel", () => up("t"));
-  wrap.addEventListener("pointerdown", e => { try { wrap.setPointerCapture(e.pointerId); } catch {} start(e.clientX, e.clientY, "p"); });
-  wrap.addEventListener("pointermove", e => move(e.clientX, e.clientY, "p"));
-  wrap.addEventListener("pointerup", () => up("p")); wrap.addEventListener("pointercancel", () => up("p"));
-  wrap.addEventListener("mousedown", e => { e.preventDefault(); start(e.clientX, e.clientY, "m"); });
-  addEventListener("mousemove", e => move(e.clientX, e.clientY, "m")); addEventListener("mouseup", () => up("m"));
-  const sm = $("#smoke");
-  addEventListener("scroll", () => { const y = scrollY; if (y < 700) { wrap.style.transform = `translateY(${y * .25}px)`; sm.style.transform = `translateY(${y * .35}px)`; } }, { passive: true });
-})();
-
-/* ---------- smoke ---------- */
-(function () {
-  const cv = $("#smoke"), cx = cv.getContext("2d"); let W, H, ps = [];
-  const rs = () => { W = cv.width = cv.offsetWidth; H = cv.height = cv.offsetHeight; }; rs(); addEventListener("resize", rs);
-  const mk = init => ({ x: W * Math.random() * .6, y: init ? Math.random() * H : H + 80, r: 70 + Math.random() * 120, vy: .2 + Math.random() * .35, ph: Math.random() * 6, a: .025 + Math.random() * .04 });
-  for (let i = 0; i < 14; i++) ps.push(mk(true));
-  const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
-  (function draw() {
-    if (idle()) return setTimeout(draw, 400);
-    cx.clearRect(0, 0, W, H);
-    for (const p of ps) {
-      if (!reduce) { p.y -= p.vy; p.ph += .007; p.x += Math.sin(p.ph) * .45; p.r += .1; if (p.y < -p.r) Object.assign(p, mk(false)); }
-      const g = cx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-      g.addColorStop(0, `rgba(95,224,170,${p.a})`); g.addColorStop(1, "rgba(95,224,170,0)");
-      cx.fillStyle = g; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 7); cx.fill();
-    }
-    if (!reduce) requestAnimationFrame(draw);
-  })();
+  const prog = $("#prog"), hdr = $("#hdr"); let lastY = scrollY, ticking = false;
+  const upd = () => {
+    ticking = false;
+    const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    prog.style.setProperty("--p", max > 0 ? (y / max).toFixed(4) : 0);
+    if (Math.abs(y - lastY) < 6 && y >= 260) return;
+    if (y > 260 && y > lastY && !stack.length) hdr.classList.add("hid");
+    else hdr.classList.remove("hid");
+    lastY = y;
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+  upd();
 })();
 
 /* ---------- cart bar + fly to cart ---------- */
 $("#cbar").onclick = () => { renderCart(); openM("m-cart"); };
 function flyToCart(src) {
   try {
-    const im = src && src.querySelector("img"); const tgt = $("[data-nav=cart]"); if (!im || !tgt || matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+    const im = src && src.querySelector("img"); const tgt = $$("[data-nav=cart]").find(b => b.offsetParent !== null); if (!im || !tgt || matchMedia("(prefers-reduced-motion:reduce)").matches) return;
     const a = im.getBoundingClientRect(), b = tgt.getBoundingClientRect(), c = im.cloneNode();
     c.className = "fly"; Object.assign(c.style, { left: a.left + "px", top: a.top + "px", width: a.width + "px", height: a.height + "px" });
     document.body.appendChild(c);

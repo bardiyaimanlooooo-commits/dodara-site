@@ -1,0 +1,12 @@
+{
+  "name": "dodara-hero3d",
+  "private": true,
+  "description": "Builds /assets/hero3d.js (tree-shaken three.js scene for the homepage hero)",
+  "scripts": {
+    "build": "esbuild hero3d.js --bundle --minify --format=esm --target=es2020 --legal-comments=none --outfile=../assets/hero3d.js"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "three": "0.180.0"
+  }
+}

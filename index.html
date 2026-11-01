@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#070908">
+<meta name="theme-color" content="#050605">
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-title" content="دود آرا">
 <meta name="application-name" content="دود آرا">
 <title>دود آرا | خرید تنباکو قلیان، الفاخر اصل، ویپ و پاد</title>
@@ -30,9 +31,9 @@
 <link rel="preconnect" href="https://dodara-api.negarizadyari1355.workers.dev" crossorigin>
 <link rel="dns-prefetch" href="https://i.ibb.co">
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap&text=DODARA0123456789" rel="stylesheet">
-<link rel="preload" as="image" href="assets/tin-front.webp" fetchpriority="high">
-<link rel="stylesheet" href="style.css?v=8">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap&text=DODARAIR0123456789" rel="stylesheet">
+<link rel="preload" as="image" href="assets/tin-hero.webp" fetchpriority="high">
+<link rel="stylesheet" href="style.css?v=9">
 <link rel="preload" href="https://dodara-api.negarizadyari1355.workers.dev/api/store" as="fetch" crossorigin>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -48,23 +49,9 @@
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute">
-  <symbol id="curl" viewBox="0 0 24 24"><path d="M12 22c-4 0-6.5-2.3-6.5-5.3 0-3.6 3.6-4.8 3.6-7.8 0-1.8-1.1-3-1.1-4.9 3.6.6 6.5 3 6.5 6.6 0 2.4-1.8 3.6-1.8 5.4 0 1.2.6 1.8 1.8 1.8 1.8 0 3-1.8 3-3.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
-</svg>
-
-<header>
-  <div class="wrap hb">
-    <a class="brand" href="#top">
-      <span class="mark"><img src="assets/logo-full.webp" alt="لوگوی دود آرا" width="40" height="40"></span>
-      <span><b>دود آرا</b><small>DODARA</small></span>
-    </a>
-    <button class="hbtn" id="hSearch" aria-label="جستجو"><svg class="i"><use href="#ic-search"/></svg></button>
-  </div>
-</header>
-
-<svg width="0" height="0" style="position:absolute">
   <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
   <symbol id="ic-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></symbol>
   <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></symbol>
@@ -79,57 +66,136 @@
   <symbol id="ic-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></symbol>
   <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></symbol>
   <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="ic-arrow-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="ic-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-4 6-6 10-8"/></symbol>
+  <symbol id="ic-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+  <symbol id="ic-drag" viewBox="0 0 24 24"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M4 12h16"/></symbol>
+  <symbol id="ic-box" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
 </svg>
 
-<span id="top"></span>
-<section class="hero">
-  <canvas id="smoke"></canvas>
-  <div class="tin3d" id="tin3d" aria-label="قوطی الفاخر سه‌بعدی — با انگشت بچرخانید"><div class="stage"><div class="box" id="box">
-  <div class="core"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div>
-  <div class="fc f0" style="background-image:url('assets/tin-front.webp')"></div>
-  <div class="fc f1" style="background-image:url('assets/tin-right.webp')"></div>
-  <div class="fc f2" style="background-image:url('assets/tin-back.webp')"></div>
-  <div class="fc f3" style="background-image:url('assets/tin-right.webp')"></div>
-  <div class="tp" style="background-image:url('assets/tin-top.webp')"></div>
-  <div class="bt"></div>
-</div></div><div class="tin-sh"></div><div class="hint">بکشید یا بزنید ⟷</div></div>
-  <div class="wrap">
-    <span class="pill"><i></i>واردات مستقیم از امارات</span>
-    <p class="h1">طعم اصل،<em>بی‌واسطه.</em></p>
-    <p>تنباکو، الفاخر اصل، ویپ و پاد؛ دست‌اول و پلمب، با ارسال به سراسر ایران.</p>
-    <div class="btns">
-      <a class="b1" href="#cats">خرید محصولات</a>
-      <button class="b2" data-open-chat><svg class="i"><use href="#ic-chat"/></svg>مشاوره آنلاین</button>
+<div class="prog" id="prog" aria-hidden="true"></div>
+
+<header id="hdr">
+  <div class="wrap hb">
+    <a class="brand" href="#top">
+      <span class="mark"><img src="assets/logo-full.webp" alt="لوگوی دود آرا" width="52" height="52"></span>
+      <span class="bt"><b>دود آرا</b><small>DODARA</small></span>
+    </a>
+    <nav class="hnav" aria-label="منوی اصلی">
+      <a href="#cats">دسته‌بندی‌ها</a>
+      <a href="#why">چرا دود آرا</a>
+      <a href="/blog/">مقالات</a>
+      <a href="/about/">درباره ما</a>
+    </nav>
+    <div class="hact">
+      <button class="hbtn" id="hSearch" aria-label="جستجو"><svg class="i"><use href="#ic-search"/></svg></button>
+      <button class="hbtn dk" data-open-chat aria-label="پشتیبانی آنلاین"><svg class="i"><use href="#ic-chat"/></svg></button>
+      <button class="hbtn dk" data-nav="cart" aria-label="سبد خرید"><svg class="i"><use href="#ic-bag"/></svg><span class="cnt" id="cn2" data-n="0"></span></button>
     </div>
+  </div>
+</header>
+
+<span id="top"></span>
+<section class="hero" id="hero">
+  <div class="aura" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="bigword" aria-hidden="true">DODARA</div>
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div class="stage" id="stage">
+      <img class="poster" src="assets/tin-hero.webp" alt="تنباکو الفاخر اصل دو سیب" width="354" height="395" fetchpriority="high">
+      <span class="hint"><svg class="i"><use href="#ic-drag"/></svg>بکشید تا بچرخد</span>
+    </div>
+    <div class="copy">
+      <span class="pill"><i></i>واردات مستقیم از امارات</span>
+      <p class="h1"><span>طعم اصل،</span><em>بی‌واسطه.</em></p>
+      <p class="lead">تنباکو، الفاخر اصل، ویپ و پاد؛ دست‌اول و پلمب، با ارسال به سراسر ایران.</p>
+      <div class="btns">
+        <a class="b1" href="#cats">خرید محصولات<svg class="i"><use href="#ic-arrow"/></svg></a>
+        <button class="b2" data-open-chat><svg class="i"><use href="#ic-chat"/></svg>مشاوره آنلاین</button>
+      </div>
+      <ul class="ticks">
+        <li><svg class="i"><use href="#ic-check"/></svg>اصل و پلمب</li>
+        <li><svg class="i"><use href="#ic-check"/></svg>ارسال ۲ تا ۵ روزه</li>
+        <li><svg class="i"><use href="#ic-check"/></svg>پشتیبانی آنلاین</li>
+      </ul>
+    </div>
+  </div>
+  <a class="scue" href="#feat" aria-label="ادامه صفحه"><span></span></a>
+</section>
+
+<section class="band" id="feat">
+  <div class="wrap">
     <div class="feat">
-      <h4><span>پیشنهاد ویژه</span><span>بکشید ←</span></h4>
-      <div class="rail" id="rail"><div class="card"><div class="ph skel"></div></div><div class="card"><div class="ph skel"></div></div><div class="card"><div class="ph skel"></div></div></div>
+      <div class="fh">
+        <div><span class="eyebrow">انتخاب ما</span><h2>پیشنهاد ویژه</h2></div>
+        <div class="rnav"><button id="rPrev" aria-label="قبلی"><svg class="i"><use href="#ic-arrow-r"/></svg></button><button id="rNext" aria-label="بعدی"><svg class="i"><use href="#ic-arrow"/></svg></button></div>
+      </div>
+      <div class="rail" id="rail"><div class="card"><div class="ph skel"></div></div><div class="card"><div class="ph skel"></div></div><div class="card"><div class="ph skel"></div></div><div class="card"><div class="ph skel"></div></div></div>
     </div>
     <div class="trust">
-      <div><svg class="i"><use href="#ic-shield"/></svg><b>اصل و پلمب</b>ضمانت اصالت</div>
-      <div><svg class="i"><use href="#ic-plane"/></svg><b>از امارات</b>واردات مستقیم</div>
-      <div><svg class="i"><use href="#ic-truck"/></svg><b>سراسر ایران</b>پیشتاز و تیپاکس</div>
+      <div><span class="ti"><svg class="i"><use href="#ic-shield"/></svg></span><b>اصل و پلمب</b><small>ضمانت اصالت کالا</small></div>
+      <div><span class="ti"><svg class="i"><use href="#ic-plane"/></svg></span><b>از امارات</b><small>واردات مستقیم</small></div>
+      <div><span class="ti"><svg class="i"><use href="#ic-truck"/></svg></span><b>سراسر ایران</b><small>پیشتاز و تیپاکس</small></div>
+      <div><span class="ti"><svg class="i"><use href="#ic-chat"/></svg></span><b>پشتیبانی</b><small>چت آنلاین در سایت</small></div>
     </div>
   </div>
 </section>
 
-<div class="marq"><div><span>الفاخر اصل</span><span>تنباکو پلمب</span><span>ویپ یکبارمصرف</span><span>پاد</span><span>زغال و لوازم</span><span>واردات از دبی</span><span>الفاخر اصل</span><span>تنباکو پلمب</span><span>ویپ یکبارمصرف</span><span>پاد</span><span>زغال و لوازم</span><span>واردات از دبی</span><span>الفاخر اصل</span><span>تنباکو پلمب</span><span>ویپ یکبارمصرف</span><span>پاد</span><span>زغال و لوازم</span><span>واردات از دبی</span><span>الفاخر اصل</span><span>تنباکو پلمب</span><span>ویپ یکبارمصرف</span><span>پاد</span><span>زغال و لوازم</span><span>واردات از دبی</span></div></div>
+<div class="ribbons" aria-hidden="true">
+  <div class="rb rb2"><div class="rt"><div><span>تنباکو قلیان</span><span>ویپ یکبارمصرف</span><span>پاد</span><span>زغال و لوازم</span><span>واردات از دبی</span><span>ارسال سراسری</span></div><div><span>تنباکو قلیان</span><span>ویپ یکبارمصرف</span><span>پاد</span><span>زغال و لوازم</span><span>واردات از دبی</span><span>ارسال سراسری</span></div></div></div>
+  <div class="rb rb1"><div class="rt"><div><span>الفاخر اصل</span><span>تنباکو پلمب</span><span>DODARA</span><span>دست‌اول از امارات</span><span>الفاخر اصل</span><span>تنباکو پلمب</span></div><div><span>الفاخر اصل</span><span>تنباکو پلمب</span><span>DODARA</span><span>دست‌اول از امارات</span><span>الفاخر اصل</span><span>تنباکو پلمب</span></div></div></div>
+</div>
 
 <main class="wrap">
   <section class="sec" id="cats">
-    <div class="st"><h2>دسته‌بندی‌ها</h2></div>
+    <div class="st"><div><span class="eyebrow">فروشگاه</span><h2>دسته‌بندی‌ها</h2></div></div>
     <div class="bento" id="bento"></div>
   </section>
   <div id="shop"></div>
 
-  <section class="about" id="about">
-    <img class="bg" src="assets/logo.webp" alt="" loading="lazy" width="200" height="200">
-    <h2>چیزی که می‌بینید،<br>همان چیزی است که می‌رسد.</h2>
-    <p>دود آرا کالاهای اصل و کمیاب تنباکو و ویپ را مستقیم از امارات تهیه می‌کند. هر سفارش پیش از ارسال بررسی و با بسته‌بندی امن فرستاده می‌شود.</p>
+  <section class="sec why" id="why">
+    <div class="st"><div><span class="eyebrow">چرا دود آرا</span><h2>از دبی، تا درِ خانهٔ شما</h2></div></div>
+    <div class="steps">
+      <article class="step"><span class="num">۰۱</span><span class="ti"><svg class="i"><use href="#ic-plane"/></svg></span><h3>تأمین مستقیم از امارات</h3><p>محصولات بدون واسطه از تأمین‌کنندهٔ معتبر در امارات تهیه می‌شوند.</p></article>
+      <article class="step"><span class="num">۰۲</span><span class="ti"><svg class="i"><use href="#ic-shield"/></svg></span><h3>بررسی پیش از ارسال</h3><p>هر سفارش پیش از ارسال بررسی می‌شود تا کالا اصل و پلمب به دستتان برسد.</p></article>
+      <article class="step"><span class="num">۰۳</span><span class="ti"><svg class="i"><use href="#ic-box"/></svg></span><h3>بسته‌بندی امن، ارسال سراسری</h3><p>ارسال با پست پیشتاز یا تیپاکس؛ معمولاً ۲ تا ۵ روز کاری تا تحویل.</p></article>
+    </div>
+    <div class="stats">
+      <div><b>۳۱</b><small>استان؛ ارسال به سراسر ایران</small></div>
+      <div><b>۲–۵</b><small>روز کاری تا تحویل</small></div>
+      <div><b>۱۰۰٪</b><small>اصل و پلمب</small></div>
+      <div><b>۱۸+</b><small>فقط برای بزرگسالان</small></div>
+    </div>
   </section>
 
-  <section class="sec">
-    <div class="st"><h2>سؤالات متداول</h2></div>
+  <section class="about" id="about">
+    <div class="coin-wrap" aria-hidden="true">
+      <div class="coin">
+        <i style="--z:-8px"></i><i style="--z:-6.5px"></i><i style="--z:-5px"></i><i style="--z:-3.5px"></i><i style="--z:-2px"></i><i style="--z:-.5px"></i><i style="--z:1px"></i><i style="--z:2.5px"></i><i style="--z:4px"></i><i style="--z:5.5px"></i><i style="--z:7px"></i><i style="--z:8px"></i>
+        <div class="cf cf-f"><img src="assets/logo.webp" alt="" loading="lazy" width="440" height="440"></div>
+        <div class="cf cf-b"><img src="assets/logo.webp" alt="" loading="lazy" width="440" height="440"></div>
+      </div>
+      <div class="coin-sh"></div>
+    </div>
+    <div class="ab-t">
+      <span class="eyebrow">DODARA · دود آرا</span>
+      <h2>چیزی که می‌بینید،<br>همان چیزی است که می‌رسد.</h2>
+      <p>دود آرا کالاهای اصل و کمیاب تنباکو و ویپ را مستقیم از امارات تهیه می‌کند. هر سفارش پیش از ارسال بررسی و با بسته‌بندی امن فرستاده می‌شود.</p>
+      <a class="b2" href="/about/">درباره دود آرا<svg class="i"><use href="#ic-arrow"/></svg></a>
+    </div>
+  </section>
+
+  <section class="sec" id="mag">
+    <div class="st"><div><span class="eyebrow">مجلهٔ دود آرا</span><h2>راهنمای خرید</h2></div><a href="/blog/">همه مقالات<svg class="i" style="width:16px;height:16px"><use href="#ic-arrow"/></svg></a></div>
+    <div class="posts">
+      <a class="post" href="/blog/original-vs-fake/"><span class="ti"><svg class="i"><use href="#ic-shield"/></svg></span><small>اصالت کالا</small><h3>تشخیص الفاخر اصل از تقلبی</h3><span class="more">ادامه مطلب<svg class="i"><use href="#ic-arrow"/></svg></span></a>
+      <a class="post" href="/blog/best-flavors/"><span class="ti"><svg class="i"><use href="#ic-leaf"/></svg></span><small>طعم‌ها</small><h3>محبوب‌ترین طعم‌های الفاخر</h3><span class="more">ادامه مطلب<svg class="i"><use href="#ic-arrow"/></svg></span></a>
+      <a class="post" href="/blog/pod-vs-vape/"><span class="ti"><svg class="i"><use href="#ic-bolt"/></svg></span><small>ویپ و پاد</small><h3>پاد یا ویپ؟ تفاوت‌ها و انتخاب درست</h3><span class="more">ادامه مطلب<svg class="i"><use href="#ic-arrow"/></svg></span></a>
+    </div>
+  </section>
+
+  <section class="sec" id="faq">
+    <div class="st"><div><span class="eyebrow">پاسخ سریع</span><h2>سؤالات متداول</h2></div></div>
     <div class="q"><button>چطور مطمئن شوم کالا اصل است؟<span><svg class="i" style="width:16px;height:16px"><use href="#plus"/></svg></span></button><div>همه محصولات از تأمین‌کننده معتبر در امارات وارد و پلمب تحویل داده می‌شوند. برای هر سؤال درباره اصالت، از پشتیبانی آنلاین بپرسید.</div></div>
     <div class="q"><button>هزینه و زمان ارسال چقدر است؟<span><svg class="i" style="width:16px;height:16px"><use href="#plus"/></svg></span></button><div>پست پیشتاز ۱۰۰,۰۰۰ تومان و تیپاکس ۱۵۰,۰۰۰ تومان. معمولاً ۲ تا ۵ روز کاری بسته به شهر شما.</div></div>
     <div class="q"><button>پرداخت چطور انجام می‌شود؟<span><svg class="i" style="width:16px;height:16px"><use href="#plus"/></svg></span></button><div>کارت به کارت. بعد از ثبت سفارش، شماره کارت و شبا نمایش داده می‌شود؛ پس از واریز، «پرداخت کردم» را بزنید.</div></div>
@@ -143,9 +209,16 @@
   </section>
 
   <footer>
-    <div class="fb"><span style="display:flex;align-items:center;gap:10px"><img src="assets/logo-full.webp" alt="" width="34" height="34" loading="lazy" style="border-radius:10px"><b>دود آرا</b></span><span>DODARA</span></div>
-    فروشگاه آنلاین تنباکو قلیان، الفاخر اصل، ویپ و پاد — ارسال به سراسر ایران<div class="flinks"><a href="/about/">درباره دود آرا</a><a href="/blog/">مقالات</a></div>
-    <div class="warn">استعمال دخانیات برای سلامتی مضر است. فروش به افراد زیر ۱۸ سال ممنوع است.</div>
+    <div class="fbig" aria-hidden="true">DODARA</div>
+    <div class="fgrid">
+      <div class="fbrand">
+        <span class="fb"><img src="assets/logo-full.webp" alt="" width="46" height="46" loading="lazy"><b>دود آرا</b></span>
+        <p>فروشگاه آنلاین تنباکو قلیان، الفاخر اصل، ویپ و پاد — ارسال به سراسر ایران</p>
+      </div>
+      <div class="fcol"><h4>فروشگاه</h4><a href="#cats">دسته‌بندی‌ها</a><a href="#why">چرا دود آرا</a><button data-open-chat>پشتیبانی آنلاین</button></div>
+      <div class="fcol"><h4>دود آرا</h4><a href="/about/">درباره دود آرا</a><a href="/blog/">مقالات</a><a href="/blog/buying-guide/">راهنمای خرید</a></div>
+    </div>
+    <div class="warn"><span>۱۸+</span>استعمال دخانیات برای سلامتی مضر است. فروش به افراد زیر ۱۸ سال ممنوع است.</div>
   </footer>
 </main>
 
@@ -190,8 +263,9 @@
 <div class="lb" id="lb"><button class="x" id="lbx"><svg class="i"><use href="#close"/></svg></button><img id="lbi" alt=""></div>
 <div class="toast" id="toast"></div>
 
-<script src="config.js?v=8"></script>
-<script src="app.js?v=8" defer></script>
+<script src="config.js?v=9"></script>
+<script src="app.js?v=9" defer></script>
+<script type="module" src="assets/hero3d.js?v=1"></script>
 <script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));</script>
 </body>
 </html>
