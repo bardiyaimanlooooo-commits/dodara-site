@@ -9,6 +9,16 @@
  */
 (function () {
   "use strict";
+  // Wait until the 3D hero is on screen (or has given up) so both do not fight
+  // over the GPU at startup — the tin appears several times faster this way.
+  const hero = document.querySelector(".hero");
+  let started = false;
+  const go = () => { if (started) return; started = true; (window.requestIdleCallback || setTimeout)(main, { timeout: 600 }); };
+  const ready = () => !hero || /\b(gl-on|no-gl|gl-slow)\b/.test(hero.className);
+  if (ready()) go();
+  else { new MutationObserver((_, mo) => { if (ready()) { mo.disconnect(); setTimeout(go, 250); } }).observe(hero, { attributes: true, attributeFilter: ["class"] }); setTimeout(go, 4000); }
+
+function main() {
   const canvas = document.getElementById("smokefx");
   if (!canvas || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const gl = canvas.getContext("webgl2", { alpha: true, depth: false, stencil: false, antialias: false, premultipliedAlpha: true, powerPreference: "high-performance" });
@@ -196,4 +206,5 @@
   addEventListener("scroll", () => { if (scrollY < innerHeight * 1.2) wake(); }, { passive: true });
   canvas.classList.add("on");
   wake();
+}
 })();

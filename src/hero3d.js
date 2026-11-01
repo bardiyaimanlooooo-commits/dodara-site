@@ -149,7 +149,7 @@ async function init() {
   let prMax = [1.75, 2.5, 2][tier];   // keep the tin crisp on high-DPI phones
   const OCT = tier === 2 ? 5 : 4;
 
-  const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance", premultipliedAlpha: true });
+  const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: (devicePixelRatio || 1) < 2, powerPreference: "high-performance", premultipliedAlpha: true });
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
@@ -236,8 +236,10 @@ async function init() {
   /* ---------- layout: put the composition exactly where #stage is ---------- */
   let W = 1, H = 1, pr = Math.min(devicePixelRatio || 1, prMax), dist = 6; const _sz = new Vector2();
   const ELEV = 0.13;  // camera elevation (rad) — sees a bit of the lid
+  let heroTop = 0, heroH = 1, cvLeft = 0, cvTop = 0;
   function layout() {
-    const cr = canvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+    const cr = canvas.getBoundingClientRect(), sr = stage.getBoundingClientRect(), hb = hero.getBoundingClientRect();
+    heroTop = hb.top + scrollY; heroH = hb.height; cvLeft = cr.left + scrollX; cvTop = cr.top + scrollY;
     W = Math.max(1, Math.round(cr.width)); H = Math.max(1, Math.round(cr.height));
     if (renderer.getPixelRatio() !== pr) renderer.setPixelRatio(pr);
     const sz = renderer.getSize(_sz); if (sz.x !== W || sz.y !== H) renderer.setSize(W, H, false);
@@ -252,7 +254,7 @@ async function init() {
   layout();
   let rT, needLayout = false; const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { needLayout = true; dirty = true; }, 80); };
   addEventListener("resize", onResize);
-  if ("ResizeObserver" in window) new ResizeObserver(onResize).observe(stage);
+  if ("ResizeObserver" in window) { const ro = new ResizeObserver(onResize); ro.observe(stage); ro.observe(hero); }
 
   /* ---------- interaction ---------- */
   const ray = new Raycaster(), ndc = new Vector2(), hit = new Vector3();
@@ -338,8 +340,7 @@ async function init() {
     tiltX += (tiltT - tiltX) * Math.min(1, dt * 8);
 
     // scroll progress through hero
-    const hr = hero.getBoundingClientRect();
-    const sp = clamp(-hr.top / Math.max(1, hr.height), 0, 1);
+    const sp = clamp((scrollY - heroTop) / Math.max(1, heroH), 0, 1);
 
     spinner.rotation.set(tiltX, rotY + (1 - k) * -3.4 + sp * 2.4, 0);
     const bob = reduce ? 0 : Math.sin(time * 1.25) * 0.055;
@@ -383,6 +384,7 @@ async function init() {
       }
     }
   }
+  try { await renderer.compileAsync(scene, camera); } catch {}
   sync();
 }
 

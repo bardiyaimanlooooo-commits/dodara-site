@@ -25,15 +25,13 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://dodara-api.negarizadyari1355.workers.dev" crossorigin>
 <link rel="dns-prefetch" href="https://i.ibb.co">
-<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap&text=DODARAIR0123456789" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/vazirmatn-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/vazirmatn-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="/assets/hero3d.js?v=5">
 <link rel="preload" as="image" href="assets/tin-hero-hd.webp" fetchpriority="high">
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=14">
 <link rel="preload" href="https://dodara-api.negarizadyari1355.workers.dev/api/store" as="fetch" crossorigin>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -266,7 +264,7 @@
 <script>setTimeout(function(){var h=document.querySelector(".hero");if(h&&!h.classList.contains("gl-on"))h.classList.add("gl-slow")},6000)</script>
 <script src="config.js?v=9"></script>
 <script src="app.js?v=11" defer></script>
-<script type="module" src="assets/hero3d.js?v=4"></script>
+<script type="module" src="/assets/hero3d.js?v=5"></script>
 <script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));</script>
 </body>
 </html>

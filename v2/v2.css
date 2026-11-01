@@ -23,7 +23,7 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
   background:radial-gradient(50% 34% at 50% 30%,rgba(31,181,125,.15),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(216,178,106,.12),transparent 70%)}
 .v2 .hero:after{display:none}
 .v2 .hero,.v2 .band,.v2 main,.v2 > .band-girih{position:relative;z-index:2}
-.v2 #gl{z-index:3;pointer-events:none}
+.v2 #gl{position:absolute;inset:auto;left:-12%;top:-20%;width:124%;height:128%;z-index:1;pointer-events:none}
 .v2 .stage{pointer-events:auto;touch-action:pan-y;cursor:grab;margin-top:6px}
 .v2 .arch{position:absolute;inset:0 0 -2px;width:100%;height:100%;overflow:visible;pointer-events:none}
 .arch-fill{fill:url(#archGlow)}
@@ -40,10 +40,12 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
 .v2 .gl-on .stage:after,.v2 .no-gl .stage:after,.v2 .gl-slow .stage:after{opacity:0;animation:none}
 @keyframes breathe{50%{transform:translate(-50%,-50%) scale(1.12);opacity:.6}}
 .v2 .hint{bottom:2px;z-index:4}
+.v2 .stage .arch{z-index:0}
 .v2 .copy{margin-top:4px}
-.v2 .h1{font-size:clamp(50px,14vw,124px);line-height:1.62;margin:.66em 0 0;letter-spacing:0;filter:drop-shadow(0 10px 24px rgba(0,0,0,.55))}
-.v2 .h1 span,.v2 .h1 em{padding:.18em .05em .3em;margin:-.18em 0 -.3em}
-.v2 .h1 em{margin-top:-.42em}
+.v2 .h1{font-size:clamp(50px,14vw,124px);line-height:1.62;margin:.8em 0 0;letter-spacing:0;filter:drop-shadow(0 10px 24px rgba(0,0,0,.55))}
+/* tall Nastaliq strokes (ط) rise far above the line: give the gradient-clipped text room so they are not cut */
+.v2 .h1 span,.v2 .h1 em{padding:.62em .05em .3em;margin:-.62em 0 -.3em}
+.v2 .h1 em{margin-top:-.86em}
 .v2 .lead{margin-top:8px}
 .arrange{display:flex;align-items:center;gap:9px;margin-top:20px;font-size:13.5px;color:var(--mute)}
 .arrange b{color:var(--gold2);font-weight:700}

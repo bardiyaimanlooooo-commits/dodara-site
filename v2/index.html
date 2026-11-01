@@ -18,13 +18,16 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://dodara-api.negarizadyari1355.workers.dev" crossorigin>
-<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 <link rel="preload" href="/assets/fonts/nastaliq-fa.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="/assets/tin-hero-hd.webp" fetchpriority="high">
-<link rel="stylesheet" href="/style.css?v=13">
-<link rel="stylesheet" href="/v2/v2.css?v=4">
+<link rel="preload" href="/assets/fonts/vazirmatn-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="/assets/hero3d-v2.js?v=5">
+<link rel="preload" as="image" href="/assets/3d/front.webp" crossorigin>
+<link rel="preload" as="image" href="/assets/3d/right.webp" crossorigin>
+<link rel="preload" as="image" href="/assets/3d/back.webp" crossorigin>
+<link rel="preload" as="image" href="/assets/3d/top.webp" crossorigin>
+<link rel="stylesheet" href="/style.css?v=14">
+<link rel="stylesheet" href="/v2/v2.css?v=5">
 <link rel="preload" href="https://dodara-api.negarizadyari1355.workers.dev/api/store" as="fetch" crossorigin>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -108,7 +111,8 @@
         <path class="arch-l a3" d="M10 172H24M276 172H290"/>
         <g class="arch-star" transform="translate(150 8)"><path d="M0-9L2.6-3.6 8.4-4 5.4 1 7 6.6 0 4.6-7 6.6-5.4 1-8.4-4-2.6-3.6Z"/></g>
       </svg>
-      <img class="poster" src="/assets/tin-hero-hd.webp" alt="تنباکو الفاخر اصل دو سیب" width="708" height="790" fetchpriority="high">
+      <canvas id="gl" aria-hidden="true"></canvas>
+      <img class="poster" data-src="/assets/tin-hero-hd.webp" alt="تنباکو الفاخر اصل دو سیب" width="708" height="790">
       <span class="hint"><svg class="i"><use href="#ic-drag"/></svg>بکشید تا بچرخد · روی قوطی بزنید</span>
     </div>
     <div class="copy">
@@ -122,7 +126,6 @@
       <p class="arrange"><span class="dot"></span>انگشت‌تان را روی صفحه بکشید؛ <b>دود را بیارایید.</b></p>
     </div>
   </div>
-  <canvas id="gl" aria-hidden="true"></canvas>
   <a class="scue" href="#feat" aria-label="ادامه صفحه"><span></span></a>
 </section>
 
@@ -279,11 +282,11 @@
 <div class="lb" id="lb"><button class="x" id="lbx"><svg class="i"><use href="#close"/></svg></button><img id="lbi" alt=""></div>
 <div class="toast" id="toast"></div>
 
-<script>setTimeout(function(){var h=document.querySelector(".hero");if(h&&!h.classList.contains("gl-on"))h.classList.add("gl-slow")},6000)</script>
+<script>(function(){var h=document.querySelector(".hero"),i=document.querySelector(".poster");if(!h)return;function sp(){if(i&&!i.getAttribute("src"))i.src=i.dataset.src}if(!window.WebGL2RenderingContext)sp();setTimeout(function(){if(!h.classList.contains("gl-on")){h.classList.add("gl-slow");sp()}},6000);new MutationObserver(function(){if(h.classList.contains("no-gl"))sp()}).observe(h,{attributes:true,attributeFilter:["class"]})})()</script>
 <script src="/config.js?v=9"></script>
 <script src="/app.js?v=11" defer></script>
-<script src="/assets/fluid.js?v=2" defer></script>
-<script type="module" src="/assets/hero3d-v2.js?v=3"></script>
+<script src="/assets/fluid.js?v=3" defer></script>
+<script type="module" src="/assets/hero3d-v2.js?v=5"></script>
 <script>
 (function(){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("shown");io.unobserve(e.target)}})},{threshold:.2});document.querySelectorAll("[data-rv]").forEach(function(el){io.observe(el)})})();
 if("serviceWorker"in navigator)addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})});

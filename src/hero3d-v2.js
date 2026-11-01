@@ -25,7 +25,7 @@ const LID_F = { right: 0.181, front: 0.168, back: 0.173 };   // lid seam height 
 const LID_H = TIN_H * 0.176, BODY_H = TIN_H - LID_H;
 const BODY_Y = -TIN_H / 2 + BODY_H / 2, LID_Y = TIN_H / 2 - LID_H / 2;
 const RING_Y = -0.84;
-const COMP_H = 1.98, COMP_W = 2.1, COMP_CY = 0.08;
+const COMP_H = 2.2, COMP_W = 2.1, COMP_CY = 0.04;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const ease = t => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
@@ -93,7 +93,7 @@ async function init() {
   const tier = coarse ? (cores <= 4 || mem <= 2 ? 0 : 1) : 2;
   const prMax = [1.75, 2.5, 2][tier];
 
-  const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance", premultipliedAlpha: true });
+  const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: (devicePixelRatio || 1) < 2, powerPreference: "high-performance", premultipliedAlpha: true });
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
@@ -162,8 +162,10 @@ async function init() {
   /* ---------- layout: composition centred in #stage ---------- */
   let W = 1, H = 1, pr = Math.min(devicePixelRatio || 1, prMax), dist = 6; const _sz = new Vector2();
   const ELEV = 0.3;  // higher than v1 so you can look into the open tin
+  let heroTop = 0, heroH = 1, cvLeft = 0, cvTop = 0;
   function layout() {
-    const cr = canvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+    const cr = canvas.getBoundingClientRect(), sr = stage.getBoundingClientRect(), hb = hero.getBoundingClientRect();
+    heroTop = hb.top + scrollY; heroH = hb.height; cvLeft = cr.left + scrollX; cvTop = cr.top + scrollY;
     W = Math.max(1, Math.round(cr.width)); H = Math.max(1, Math.round(cr.height));
     if (renderer.getPixelRatio() !== pr) renderer.setPixelRatio(pr);
     const sz = renderer.getSize(_sz); if (sz.x !== W || sz.y !== H) renderer.setSize(W, H, false); dustU.uPR.value = pr;
@@ -175,7 +177,7 @@ async function init() {
   layout();
   let rT, needLayout = false; const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { needLayout = true; dirty = true; }, 80); };
   addEventListener("resize", onResize);
-  if ("ResizeObserver" in window) new ResizeObserver(onResize).observe(stage);
+  if ("ResizeObserver" in window) { const ro = new ResizeObserver(onResize); ro.observe(stage); ro.observe(hero); }
 
   /* ---------- interaction (on the stage element) ---------- */
   const ray = new Raycaster(), ndc = new Vector2();
@@ -211,7 +213,7 @@ async function init() {
   const AX = new Vector3(1, 0, 0), AY = new Vector3(0, 1, 0), AZ = new Vector3(0, 0, 1);
   let burst = 0, puffT = 0;
   function puff(now, strength) {
-    const r = canvas.getBoundingClientRect();
+    const r = { left: cvLeft - scrollX, top: cvTop - scrollY, width: W, height: H };
     mouth.set((Math.random() - .5) * 0.55, BODY_H / 2 + 0.02, (Math.random() - .5) * 0.55);
     body.localToWorld(mouth); mouth.project(camera);
     if (mouth.z > 1) return;
@@ -254,8 +256,7 @@ async function init() {
 
     if (!drag) { vel += (AUTO - vel) * Math.min(1, dt * 1.6); rotY += vel * dt; tiltT *= Math.pow(0.12, dt); }
     tiltX += (tiltT - tiltX) * Math.min(1, dt * 8);
-    const hr = hero.getBoundingClientRect();
-    const sp = clamp(-hr.top / Math.max(1, hr.height), 0, 1);
+    const sp = clamp((scrollY - heroTop) / Math.max(1, heroH), 0, 1);
 
     spinner.rotation.set(tiltX + o * 0.1, rotY + (1 - k) * -3.4 + sp * 2.4, 0);
     const bob = reduce ? 0 : Math.sin(time * 1.25) * 0.05;
@@ -267,7 +268,7 @@ async function init() {
     qA.setFromAxisAngle(AY, -th); qB.setFromAxisAngle(AX, o * 0.42); qC.setFromAxisAngle(AY, th + yawOff); qD.setFromAxisAngle(AZ, -o * 0.08);
     lidG.quaternion.copy(qA).multiply(qD).multiply(qB).multiply(qC);
     lidOff.set(o * 0.04, 0, -o * 0.1).applyAxisAngle(AY, -th);
-    lidG.position.set(lidOff.x, LID_Y + o * 0.5 + lb, lidOff.z);
+    lidG.position.set(lidOff.x, LID_Y + o * 0.46 + lb, lidOff.z);
     ember.intensity = o * 1.05;
 
     rig.position.y = -COMP_CY + (1 - k) * -0.75 + sp * 0.75;
@@ -301,6 +302,7 @@ async function init() {
       }
     }
   }
+  try { await renderer.compileAsync(scene, camera); } catch {}
   sync();
 }
 
