@@ -1,3 +1,4 @@
+/v2/*        /             301
 /p/*          https://dodara-api.negarizadyari1355.workers.dev/p/:splat     200
 /c/*          https://dodara-api.negarizadyari1355.workers.dev/c/:splat     200
 /sitemap.xml  https://dodara-api.negarizadyari1355.workers.dev/sitemap.xml  200
