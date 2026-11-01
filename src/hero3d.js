@@ -145,10 +145,10 @@ async function init() {
   const coarse = matchMedia("(pointer: coarse)").matches;
   const cores = navigator.hardwareConcurrency || 4, mem = navigator.deviceMemory || 4;
   let tier = coarse ? (cores <= 4 || mem <= 2 ? 0 : 1) : 2;      // 0 low · 1 phone · 2 desktop
-  let prMax = [1.25, 1.75, 2][tier];
+  let prMax = [1.75, 2.5, 2][tier];   // keep the tin crisp on high-DPI phones
   const OCT = tier === 2 ? 5 : 4;
 
-  const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: tier > 0, powerPreference: "high-performance", premultipliedAlpha: true });
+  const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance", premultipliedAlpha: true });
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
@@ -167,7 +167,7 @@ async function init() {
 
   /* textures */
   const loader = new TextureLoader();
-  const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  const aniso = Math.min(16, renderer.capabilities.getMaxAnisotropy());
   const load = n => loader.loadAsync(TEX + n + ".webp").then(t => { t.colorSpace = SRGBColorSpace; t.anisotropy = aniso; return t; });
   const [tFront, tRight, tBack, tTop] = await Promise.all(["front", "right", "back", "top"].map(load));
 
@@ -363,17 +363,20 @@ async function init() {
     if (first) { first = false; hero.classList.add("gl-on"); }
 
     // adaptive quality: watch frame time once the intro has settled
-    if (!reduce && it > 2.5 && degrade < 4) {
+    if (!reduce && it > 2.5 && degrade < 6) {
       perfT += dt; perfN++;
       if (perfN >= 60) {
         const avg = perfT / perfN; perfN = 0; perfT = 0;
         if (avg > 0.024) {
+          // shed smoke detail first; sharpness of the tin is the last thing to go
           degrade++;
-          if (pr > 1) { pr = Math.max(1, pr - 0.35); layout(); }
-          else if (haze && haze.visible) haze.visible = false;
-          else if (wisp.visible) { wisp.visible = false; }
-          else { dust.visible = false; degrade = 4; }
-        } else degrade = 4;  // fast enough — stop checking
+          if (haze && haze.visible) haze.visible = false;
+          else if (wisp.visible) wisp.visible = false;
+          else if (pr > 1.5) { pr = Math.max(1.5, pr - 0.5); layout(); }
+          else if (dust.visible) dust.visible = false;
+          else if (pr > 1) { pr = 1; layout(); degrade = 6; }
+          else degrade = 6;
+        } else degrade = 6;  // fast enough — stop checking
       }
     }
   }
