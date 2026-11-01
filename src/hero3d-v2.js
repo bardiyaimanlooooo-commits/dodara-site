@@ -10,7 +10,7 @@
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, MeshBasicMaterial,
   ShaderMaterial, PlaneGeometry, TorusGeometry, BufferGeometry, Float32BufferAttribute, Points, TextureLoader, CanvasTexture,
-  SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, AdditiveBlending, DirectionalLight, PointLight, Color, Vector2, Vector3, Raycaster
+  SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, AdditiveBlending, DirectionalLight, PointLight, Color, Vector2, Vector3, Raycaster, Quaternion
 } from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
@@ -85,7 +85,8 @@ function remapSides(geo, ranges) {
 }
 
 async function init() {
-  if (!hero || !canvas || !stage || !hasWebGL2()) return;
+  if (!hero || !canvas || !stage) return;
+  if (!hasWebGL2()) { hero.classList.add("no-gl"); return; }
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const coarse = matchMedia("(pointer: coarse)").matches;
   const cores = navigator.hardwareConcurrency || 4, mem = navigator.deviceMemory || 4;
@@ -159,19 +160,20 @@ async function init() {
   dust.frustumCulled = false; dust.renderOrder = 3; rig.add(dust);
 
   /* ---------- layout: composition centred in #stage ---------- */
-  let W = 1, H = 1, pr = Math.min(devicePixelRatio || 1, prMax), dist = 6;
+  let W = 1, H = 1, pr = Math.min(devicePixelRatio || 1, prMax), dist = 6; const _sz = new Vector2();
   const ELEV = 0.3;  // higher than v1 so you can look into the open tin
   function layout() {
     const cr = canvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
     W = Math.max(1, Math.round(cr.width)); H = Math.max(1, Math.round(cr.height));
-    renderer.setPixelRatio(pr); renderer.setSize(W, H, false); dustU.uPR.value = pr;
+    if (renderer.getPixelRatio() !== pr) renderer.setPixelRatio(pr);
+    const sz = renderer.getSize(_sz); if (sz.x !== W || sz.y !== H) renderer.setSize(W, H, false); dustU.uPR.value = pr;
     const cx = (sr.left + sr.width / 2 - cr.left) / W, cy = (sr.top + sr.height / 2 - cr.top) / H;
     const tf = 2 * Math.tan((camera.fov * Math.PI) / 360);
     dist = Math.max(COMP_H * H / (tf * sr.height * 0.84), COMP_W * H / (tf * sr.width * 0.96));
     camera.aspect = W / H; camera.setViewOffset(W, H, W * (0.5 - cx), H * (0.5 - cy), W, H); camera.updateProjectionMatrix();
   }
   layout();
-  let rT; const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { layout(); dirty = true; }, 80); };
+  let rT, needLayout = false; const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { needLayout = true; dirty = true; }, 80); };
   addEventListener("resize", onResize);
   if ("ResizeObserver" in window) new ResizeObserver(onResize).observe(stage);
 
@@ -205,6 +207,8 @@ async function init() {
 
   /* ---------- smoke out of the open tin ---------- */
   const mouth = new Vector3();
+  const qA = new Quaternion(), qB = new Quaternion(), qC = new Quaternion(), qD = new Quaternion(), lidOff = new Vector3();
+  const AX = new Vector3(1, 0, 0), AY = new Vector3(0, 1, 0), AZ = new Vector3(0, 0, 1);
   let burst = 0, puffT = 0;
   function puff(now, strength) {
     const r = canvas.getBoundingClientRect();
@@ -237,6 +241,7 @@ async function init() {
     const moving = !reduce || drag || Math.abs(vel - AUTO) > 0.01 || Math.abs(tiltX - tiltT) > 0.001 || Math.abs(openT - openGoal) > 0.001;
     if (!moving && !dirty) return;
     dirty = false;
+    if (needLayout) { needLayout = false; layout(); }
     if (t0 < 0) t0 = now;
     const it = reduce ? 10 : (now - t0) / 1000;
     if (!reduce) time += dt;
@@ -256,9 +261,13 @@ async function init() {
     const bob = reduce ? 0 : Math.sin(time * 1.25) * 0.05;
     floatG.position.y = bob; floatG.rotation.z = reduce ? 0 : Math.sin(time * 0.9) * 0.02;
     // the lid floats up, tips toward the viewer and drifts a little
+    // lid: lifts, tips toward the camera (in world space) and drifts; closes back exactly onto the body
     const lb = reduce ? 0 : Math.sin(time * 1.6 + 1) * 0.035 * o;
-    lidG.position.set(o * 0.04, LID_Y + o * 0.5 + lb, -o * 0.1);
-    lidG.rotation.set(o * 0.42, o * 0.38 + (reduce ? 0 : Math.sin(time * .7) * .08 * o), -o * 0.08);
+    const th = spinner.rotation.y, yawOff = o * 0.38 + (reduce ? 0 : Math.sin(time * .7) * .08 * o);
+    qA.setFromAxisAngle(AY, -th); qB.setFromAxisAngle(AX, o * 0.42); qC.setFromAxisAngle(AY, th + yawOff); qD.setFromAxisAngle(AZ, -o * 0.08);
+    lidG.quaternion.copy(qA).multiply(qD).multiply(qB).multiply(qC);
+    lidOff.set(o * 0.04, 0, -o * 0.1).applyAxisAngle(AY, -th);
+    lidG.position.set(lidOff.x, LID_Y + o * 0.5 + lb, lidOff.z);
     ember.intensity = o * 1.05;
 
     rig.position.y = -COMP_CY + (1 - k) * -0.75 + sp * 0.75;
@@ -287,7 +296,7 @@ async function init() {
       perfT += dt; perfN++;
       if (perfN >= 60) {
         const avg = perfT / perfN; perfN = 0; perfT = 0;
-        if (avg > 0.024) { degrade++; if (pr > 1.5) { pr = Math.max(1.5, pr - 0.5); layout(); } else if (dust.visible) dust.visible = false; else if (pr > 1) { pr = 1; layout(); degrade = 6; } else degrade = 6; }
+        if (avg > 0.024) { degrade++; if (pr > 1.5) { pr = Math.max(1.5, pr - 0.5); needLayout = true; } else if (dust.visible) dust.visible = false; else if (pr > 1) { pr = 1; needLayout = true; degrade = 6; } else degrade = 6; }
         else degrade = 6;
       }
     }
@@ -295,5 +304,5 @@ async function init() {
   sync();
 }
 
-const start = () => init().catch(err => console.warn("[hero3d]", err));
-if (document.readyState === "complete") start(); else addEventListener("load", start, { once: true });
+// start as soon as the module runs (textures load in parallel with the rest of the page)
+init().catch(err => { console.warn("[hero3d]", err); if (hero) hero.classList.add("no-gl"); });

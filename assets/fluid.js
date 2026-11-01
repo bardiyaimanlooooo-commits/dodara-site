@@ -138,16 +138,16 @@
   let last = null;
   addEventListener("pointermove", e => {
     if (e.pointerType !== "mouse") return;
-    if (last) { const dx = e.clientX - last.x, dy = e.clientY - last.y; if (dx * dx + dy * dy > 4) push(e.clientX, e.clientY, dx, dy, pick(.16)); }
+    if (last) { const dx = e.clientX - last.x, dy = e.clientY - last.y; if (dx * dx + dy * dy > 4) push(e.clientX, e.clientY, dx, dy, pick(.13)); }
     last = { x: e.clientX, y: e.clientY };
   }, { passive: true });
   addEventListener("pointerleave", () => { last = null; });
   let tl = null;
-  addEventListener("touchstart", e => { const t = e.touches[0]; tl = { x: t.clientX, y: t.clientY }; push(t.clientX, t.clientY, 0, -6, pick(.2), CFG.RADIUS * 1.6); }, { passive: true });
+  addEventListener("touchstart", e => { const t = e.touches[0]; tl = { x: t.clientX, y: t.clientY, t: performance.now() }; push(t.clientX, t.clientY, 0, -6, pick(.09), CFG.RADIUS * 1.2); }, { passive: true });
   addEventListener("touchmove", e => {
     const t = e.touches[0]; if (!tl) { tl = { x: t.clientX, y: t.clientY }; return; }
-    const dx = t.clientX - tl.x, dy = t.clientY - tl.y;
-    if (dx * dx + dy * dy > 9) { push(t.clientX, t.clientY, dx * 1.4, dy * 1.4, pick(.2)); tl = { x: t.clientX, y: t.clientY }; }
+    const dx = t.clientX - tl.x, dy = t.clientY - tl.y, now = performance.now();
+    if (dx * dx + dy * dy > 16 && now - tl.t > 24) { push(t.clientX, t.clientY, dx * 1.3, dy * 1.3, pick(.11)); tl = { x: t.clientX, y: t.clientY, t: now }; }
   }, { passive: true });
   addEventListener("touchend", () => { tl = null; }, { passive: true });
 

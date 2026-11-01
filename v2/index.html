@@ -23,8 +23,8 @@
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 <link rel="preload" href="/assets/fonts/nastaliq-fa.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="/assets/tin-hero-hd.webp" fetchpriority="high">
-<link rel="stylesheet" href="/style.css?v=10">
-<link rel="stylesheet" href="/v2/v2.css?v=1">
+<link rel="stylesheet" href="/style.css?v=13">
+<link rel="stylesheet" href="/v2/v2.css?v=4">
 <link rel="preload" href="https://dodara-api.negarizadyari1355.workers.dev/api/store" as="fetch" crossorigin>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -103,13 +103,13 @@
       <svg class="arch" viewBox="0 0 300 420" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
         <path class="arch-fill" d="M24 420V176C24 104 104 62 150 28C196 62 276 104 276 176V420Z"/>
         <rect class="arch-girih" x="0" y="0" width="300" height="420" fill="url(#girih)" clip-path="url(#archClip)"/>
-        <path class="arch-l a1" d="M10 420V172C10 92 98 48 150 8C202 48 290 92 290 172V420"/>
-        <path class="arch-l a2" d="M24 420V176C24 104 104 62 150 28C196 62 276 104 276 176V420"/>
+        <path class="arch-l a1" d="M150 8C98 48 10 92 10 172V420"/><path class="arch-l a1" d="M150 8C202 48 290 92 290 172V420"/>
+        <path class="arch-l a2" d="M150 28C104 62 24 104 24 176V420"/><path class="arch-l a2" d="M150 28C196 62 276 104 276 176V420"/>
         <path class="arch-l a3" d="M10 172H24M276 172H290"/>
         <g class="arch-star" transform="translate(150 8)"><path d="M0-9L2.6-3.6 8.4-4 5.4 1 7 6.6 0 4.6-7 6.6-5.4 1-8.4-4-2.6-3.6Z"/></g>
       </svg>
       <img class="poster" src="/assets/tin-hero-hd.webp" alt="تنباکو الفاخر اصل دو سیب" width="708" height="790" fetchpriority="high">
-      <span class="hint"><svg class="i"><use href="#ic-drag"/></svg>بکشید تا بچرخد · بزنید تا درش باز شود</span>
+      <span class="hint"><svg class="i"><use href="#ic-drag"/></svg>بکشید تا بچرخد · روی قوطی بزنید</span>
     </div>
     <div class="copy">
       <span class="pill"><i></i>واردات مستقیم از امارات</span>
@@ -279,10 +279,11 @@
 <div class="lb" id="lb"><button class="x" id="lbx"><svg class="i"><use href="#close"/></svg></button><img id="lbi" alt=""></div>
 <div class="toast" id="toast"></div>
 
+<script>setTimeout(function(){var h=document.querySelector(".hero");if(h&&!h.classList.contains("gl-on"))h.classList.add("gl-slow")},6000)</script>
 <script src="/config.js?v=9"></script>
 <script src="/app.js?v=11" defer></script>
-<script src="/assets/fluid.js?v=1" defer></script>
-<script type="module" src="/assets/hero3d-v2.js?v=1"></script>
+<script src="/assets/fluid.js?v=2" defer></script>
+<script type="module" src="/assets/hero3d-v2.js?v=3"></script>
 <script>
 (function(){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("shown");io.unobserve(e.target)}})},{threshold:.2});document.querySelectorAll("[data-rv]").forEach(function(el){io.observe(el)})})();
 if("serviceWorker"in navigator)addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})});

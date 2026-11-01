@@ -11,7 +11,7 @@
 body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
 
 /* live smoke layer (assets/fluid.js) */
-#smokefx{position:fixed;inset:0;width:100%;height:100%;z-index:45;pointer-events:none;opacity:0;transition:opacity 1.6s ease}
+#smokefx{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.6s ease}
 #smokefx.on{opacity:1}
 
 /* header */
@@ -21,7 +21,8 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
 /* ---------- hero: the arch ---------- */
 .v2 .hero{--sh:clamp(350px,54svh,500px);padding-top:0;
   background:radial-gradient(50% 34% at 50% 30%,rgba(31,181,125,.15),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(216,178,106,.12),transparent 70%)}
-.v2 .hero:after{background:linear-gradient(transparent,rgba(5,6,5,.6))}
+.v2 .hero:after{display:none}
+.v2 .hero,.v2 .band,.v2 main,.v2 > .band-girih{position:relative;z-index:2}
 .v2 #gl{z-index:3;pointer-events:none}
 .v2 .stage{pointer-events:auto;touch-action:pan-y;cursor:grab;margin-top:6px}
 .v2 .arch{position:absolute;inset:0 0 -2px;width:100%;height:100%;overflow:visible;pointer-events:none}
@@ -33,10 +34,14 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
 .arch-l.a3{stroke-width:1.6;animation-delay:1.6s}
 .arch-star{fill:url(#gold);opacity:0;animation:fadeIn .8s 2.2s forwards;filter:drop-shadow(0 0 6px rgba(241,215,155,.8))}
 @keyframes archDraw{to{stroke-dashoffset:0}}
-.v2 .poster{height:46%;margin-top:10%}
+.v2 .poster{height:46%;margin-top:10%;opacity:0;animation:none}
+.v2 .no-gl .poster,.v2 .gl-slow:not(.gl-on) .poster{opacity:1;animation:floatY 5s ease-in-out infinite}
+.v2 .stage:after{content:"";position:absolute;left:50%;top:56%;width:46%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(241,215,155,.32),rgba(31,181,125,.12) 55%,transparent);animation:breathe 1.8s ease-in-out infinite;transition:opacity .8s;pointer-events:none}
+.v2 .gl-on .stage:after,.v2 .no-gl .stage:after,.v2 .gl-slow .stage:after{opacity:0;animation:none}
+@keyframes breathe{50%{transform:translate(-50%,-50%) scale(1.12);opacity:.6}}
 .v2 .hint{bottom:2px;z-index:4}
 .v2 .copy{margin-top:4px}
-.v2 .h1{font-size:clamp(50px,14vw,124px);line-height:1.62;margin:.42em 0 0;letter-spacing:0;filter:drop-shadow(0 10px 24px rgba(0,0,0,.55))}
+.v2 .h1{font-size:clamp(50px,14vw,124px);line-height:1.62;margin:.66em 0 0;letter-spacing:0;filter:drop-shadow(0 10px 24px rgba(0,0,0,.55))}
 .v2 .h1 span,.v2 .h1 em{padding:.18em .05em .3em;margin:-.18em 0 -.3em}
 .v2 .h1 em{margin-top:-.42em}
 .v2 .lead{margin-top:8px}
@@ -122,3 +127,19 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
 
 @media(prefers-reduced-motion:reduce){.arch-l{stroke-dashoffset:0}.arch-star{opacity:1}.jsky path{stroke-dashoffset:0}#smokefx{display:none}}
 @media(max-width:600px){.jlbl{font-size:36px}.jsky path,.jdoor path,.jroute{stroke-width:2.8}.jmap{padding:14px 6px 2px}}
+/* headline size cap on tablets in portrait */
+@media(min-width:600px) and (max-width:899px){.v2 .h1{font-size:clamp(60px,11vw,92px)}}
+/* landscape phones */
+@media(orientation:landscape) and (max-height:540px) and (min-width:600px) and (max-width:899px){
+  .v2 .hero{--sh:calc(100svh - 84px)}
+  .v2 .h1{font-size:clamp(40px,6.6vw,58px);margin-top:.6em}
+  .v2 .arrange{margin-top:12px}
+  .v2 .poster{height:42%}
+}
+@media(orientation:landscape) and (max-height:540px) and (min-width:600px) and (max-width:899px){
+  .v2 .hero-in{align-items:flex-start}
+  .v2 .h1{font-size:clamp(34px,5.4vw,46px);margin-top:.5em}
+  .v2 .lead{font-size:13px;margin-top:2px}
+  .v2 .arrange{display:none}
+  .v2 .stage{margin-top:0}
+}

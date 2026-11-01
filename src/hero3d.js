@@ -139,7 +139,8 @@ void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.
 
 /* ---------------- scene ---------------- */
 async function init() {
-  if (!hero || !canvas || !stage || !hasWebGL2()) return;
+  if (!hero || !canvas || !stage) return;
+  if (!hasWebGL2()) { hero.classList.add("no-gl"); return; }
 
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const coarse = matchMedia("(pointer: coarse)").matches;
@@ -233,12 +234,13 @@ async function init() {
   dust.frustumCulled = false; dust.renderOrder = 3; rig.add(dust);
 
   /* ---------- layout: put the composition exactly where #stage is ---------- */
-  let W = 1, H = 1, pr = Math.min(devicePixelRatio || 1, prMax), dist = 6;
+  let W = 1, H = 1, pr = Math.min(devicePixelRatio || 1, prMax), dist = 6; const _sz = new Vector2();
   const ELEV = 0.13;  // camera elevation (rad) — sees a bit of the lid
   function layout() {
     const cr = canvas.getBoundingClientRect(), sr = stage.getBoundingClientRect();
     W = Math.max(1, Math.round(cr.width)); H = Math.max(1, Math.round(cr.height));
-    renderer.setPixelRatio(pr); renderer.setSize(W, H, false);
+    if (renderer.getPixelRatio() !== pr) renderer.setPixelRatio(pr);
+    const sz = renderer.getSize(_sz); if (sz.x !== W || sz.y !== H) renderer.setSize(W, H, false);
     dustU.uPR.value = pr;
     const cx = (sr.left + sr.width / 2 - cr.left) / W, cy = (sr.top + sr.height / 2 - cr.top) / H;
     const tf = 2 * Math.tan((camera.fov * Math.PI) / 360);
@@ -248,7 +250,7 @@ async function init() {
     camera.updateProjectionMatrix();
   }
   layout();
-  let rT; const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { layout(); dirty = true; }, 80); };
+  let rT, needLayout = false; const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { needLayout = true; dirty = true; }, 80); };
   addEventListener("resize", onResize);
   if ("ResizeObserver" in window) new ResizeObserver(onResize).observe(stage);
 
@@ -322,6 +324,7 @@ async function init() {
     const moving = !reduce || drag || Math.abs(vel - AUTO) > 0.01 || Math.abs(tiltX - tiltT) > 0.001;
     if (!moving && !dirty) return;
     dirty = false;
+    if (needLayout) { needLayout = false; layout(); }
     if (t0 < 0) t0 = now;
     const it = reduce ? 10 : (now - t0) / 1000;     // seconds since start
     if (!reduce) time += dt;
@@ -372,9 +375,9 @@ async function init() {
           degrade++;
           if (haze && haze.visible) haze.visible = false;
           else if (wisp.visible) wisp.visible = false;
-          else if (pr > 1.5) { pr = Math.max(1.5, pr - 0.5); layout(); }
+          else if (pr > 1.5) { pr = Math.max(1.5, pr - 0.5); needLayout = true; }
           else if (dust.visible) dust.visible = false;
-          else if (pr > 1) { pr = 1; layout(); degrade = 6; }
+          else if (pr > 1) { pr = 1; needLayout = true; degrade = 6; }
           else degrade = 6;
         } else degrade = 6;  // fast enough — stop checking
       }
@@ -383,5 +386,5 @@ async function init() {
   sync();
 }
 
-const start = () => init().catch(err => { console.warn("[hero3d]", err); });
-if (document.readyState === "complete") start(); else addEventListener("load", start, { once: true });
+// start as soon as the module runs (textures load in parallel with the rest of the page)
+init().catch(err => { console.warn("[hero3d]", err); if (hero) hero.classList.add("no-gl"); });
