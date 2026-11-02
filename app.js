@@ -333,6 +333,7 @@ $("#rPrev").onclick = () => railStep(1);
   const upd = () => {
     ticking = false;
     const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    hdr.classList.toggle("top", y < 30);
     prog.style.setProperty("--p", max > 0 ? (y / max).toFixed(4) : 0);
     if (Math.abs(y - lastY) < 6 && y >= 260) return;
     if (y > 260 && y > lastY && !stack.length) hdr.classList.add("hid");

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050605">
+<meta name="theme-color" content="#07110c">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-title" content="دود آرا">
 <meta name="application-name" content="دود آرا">
@@ -28,14 +28,14 @@
 <link rel="preconnect" href="https://dodara-api.negarizadyari1355.workers.dev" crossorigin>
 <link rel="dns-prefetch" href="https://i.ibb.co">
 <link rel="preload" href="/assets/fonts/nastaliq-fa.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/vazirmatn-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="modulepreload" href="/assets/hero3d-v2.js?v=5">
-<link rel="preload" as="image" href="/assets/3d/front.webp" crossorigin>
-<link rel="preload" as="image" href="/assets/3d/right.webp" crossorigin>
-<link rel="preload" as="image" href="/assets/3d/back.webp" crossorigin>
-<link rel="preload" as="image" href="/assets/3d/top.webp" crossorigin>
-<link rel="stylesheet" href="/style.css?v=14">
-<link rel="stylesheet" href="/theme.css?v=1">
+<link rel="preload" href="/assets/fonts/vazirmatn-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="/assets/hero3d-v2.js?v=6">
+<link rel="preload" as="image" href="/assets/3d/front.webp?v=2" crossorigin>
+<link rel="preload" as="image" href="/assets/3d/right.webp?v=2" crossorigin>
+<link rel="preload" as="image" href="/assets/3d/back.webp?v=2" crossorigin>
+<link rel="preload" as="image" href="/assets/3d/top.webp?v=2" crossorigin>
+<link rel="stylesheet" href="/style.css?v=15">
+<link rel="stylesheet" href="/theme.css?v=6">
 <link rel="preload" href="https://dodara-api.negarizadyari1355.workers.dev/api/store" as="fetch" crossorigin>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -86,7 +86,7 @@
 <canvas id="smokefx" aria-hidden="true"></canvas>
 <div class="prog" id="prog" aria-hidden="true"></div>
 
-<header id="hdr">
+<header id="hdr" class="top">
   <div class="wrap hb">
     <a class="brand" href="#top">
       <span class="mark"><img src="/assets/logo-full.webp" alt="لوگوی دود آرا" width="52" height="52"></span>
@@ -104,6 +104,7 @@
       <button class="hbtn dk" data-nav="cart" aria-label="سبد خرید"><svg class="i"><use href="#ic-bag"/></svg><span class="cnt" id="cn2" data-n="0"></span></button>
     </div>
   </div>
+  <span class="horn" aria-hidden="true"></span>
 </header>
 
 <span id="top"></span>
@@ -292,9 +293,9 @@
 
 <script>(function(){var h=document.querySelector(".hero"),i=document.querySelector(".poster");if(!h)return;function sp(){if(i&&!i.getAttribute("src"))i.src=i.dataset.src}if(!window.WebGL2RenderingContext)sp();setTimeout(function(){if(!h.classList.contains("gl-on")){h.classList.add("gl-slow");sp()}},6000);new MutationObserver(function(){if(h.classList.contains("no-gl"))sp()}).observe(h,{attributes:true,attributeFilter:["class"]})})()</script>
 <script src="/config.js?v=9"></script>
-<script src="/app.js?v=11" defer></script>
+<script src="/app.js?v=12" defer></script>
 <script src="/assets/fluid.js?v=3" defer></script>
-<script type="module" src="/assets/hero3d-v2.js?v=5"></script>
+<script type="module" src="/assets/hero3d-v2.js?v=6"></script>
 <script>
 (function(){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("shown");io.unobserve(e.target)}})},{threshold:.2});document.querySelectorAll("[data-rv]").forEach(function(el){io.observe(el)})})();
 if("serviceWorker"in navigator)addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})});

@@ -112,7 +112,7 @@ async function init() {
 
   const loader = new TextureLoader();
   const aniso = Math.min(16, renderer.capabilities.getMaxAnisotropy());
-  const load = n => loader.loadAsync(TEX + n + ".webp").then(t => { t.colorSpace = SRGBColorSpace; t.anisotropy = aniso; return t; });
+  const load = n => loader.loadAsync(TEX + n + ".webp?v=2").then(t => { t.colorSpace = SRGBColorSpace; t.anisotropy = aniso; return t; });
   const [tFront, tRight, tBack, tTop] = await Promise.all(["front", "right", "back", "top"].map(load));
   const tTob = tobaccoTexture(); tTob.anisotropy = aniso;
 

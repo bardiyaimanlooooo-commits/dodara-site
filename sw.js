@@ -1,20 +1,45 @@
-/* Dodara service worker — fast repeat visits */
-const V = "dodara-v13";
-const CORE = ["/", "/style.css", "/app.js", "/config.js", "/page.css", "/theme.css", "/assets/hero3d-v2.js", "/assets/fluid.js", "/assets/fonts/nastaliq-fa.woff2", "/assets/3d/front.webp", "/assets/3d/right.webp", "/assets/3d/back.webp", "/assets/3d/top.webp", "/assets/icon-192.png", "/assets/logo-full.webp", "/assets/logo.webp", "/assets/fonts/vazirmatn-400.woff2", "/assets/fonts/vazirmatn-900.woff2"];
-self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+/* Dodara service worker — instant repeat visits
+ * - static files (css/js/images/fonts): served from cache at once, refreshed in the background
+ *   (pages reference versioned URLs like style.css?v=15, so a new release fetches new files)
+ * - pages: network first, but fall back to the cached page after 3.5 s on a slow connection
+ * Bump V on every release: old caches are deleted on activate.
+ */
+const V = "dodara-v14";
+const CORE = ["/", "/assets/fonts/vazirmatn-var.woff2", "/assets/fonts/nastaliq-fa.woff2", "/assets/3d/front.webp?v=2", "/assets/3d/right.webp?v=2", "/assets/3d/back.webp?v=2", "/assets/3d/top.webp?v=2", "/assets/logo-full.webp", "/assets/icon-192.png"];
+self.addEventListener("install", e => {
+  e.waitUntil(caches.open(V).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
+});
+self.addEventListener("activate", e => {
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+});
+const put = (req, res) => { if (res && (res.ok || res.type === "opaque")) { const cl = res.clone(); caches.open(V).then(c => c.put(req, cl)).catch(() => {}); } return res; };
 self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET") return;
   if (u.hostname.endsWith("workers.dev") || u.pathname.startsWith("/p/") || u.pathname.startsWith("/c/") || u.pathname.endsWith(".xml") || u.pathname.endsWith(".txt")) return;
-  const isImg = r.destination === "image" || u.hostname === "i.ibb.co";
-  const isStatic = u.origin === location.origin && /\.(css|js|webp|png|jpg|svg|woff2?)$/.test(u.pathname);
-  const isFont = /jsdelivr|gstatic|googleapis/.test(u.hostname);
-  if (isImg || isFont) { // cache-first
-    e.respondWith(caches.match(r).then(h => h || fetch(r).then(res => { if (res.ok || res.type === "opaque") { const cl = res.clone(); caches.open(V).then(c => c.put(r, cl)); } return res; })));
-  } else if (isStatic || r.mode === "navigate") { // network-first: updates show immediately, cache only when offline
-    e.respondWith(fetch(r).then(res => { if (res.ok) { const cl = res.clone(); caches.open(V).then(c => c.put(r, cl)); } return res; })
-      .catch(() => caches.match(r, { ignoreSearch: r.mode === "navigate" })));
+  const same = u.origin === location.origin;
+  if (r.mode === "navigate") {                                   // page: network first, cache after 3.5 s
+    e.respondWith(new Promise(resolve => {
+      let done = false;
+      const fromCache = () => caches.match(r, { ignoreSearch: true }).then(h => h || caches.match("/"));
+      const t = setTimeout(() => fromCache().then(h => { if (h && !done) { done = true; resolve(h); } }), 3500);
+      fetch(r).then(res => { put(r, res.clone()); if (!done) { done = true; clearTimeout(t); resolve(res); } })
+        .catch(() => fromCache().then(h => { if (!done) { done = true; clearTimeout(t); resolve(h || Response.error()); } }));
+    }));
+    return;
+  }
+  if (same && (u.pathname === "/config.js" || u.pathname === "/sw.js")) {   // always fresh, cache only as offline fallback
+    e.respondWith(fetch(r).then(res => put(r, res)).catch(() => caches.match(r, { ignoreSearch: true })));
+    return;
+  }
+  const isStatic = same && /\.(css|js|webp|png|jpg|svg|woff2?|webmanifest)$/.test(u.pathname);
+  const isRemoteImg = !same && (r.destination === "image" || u.hostname === "i.ibb.co");
+  if (isStatic || isRemoteImg) {                                 // stale-while-revalidate
+    e.respondWith(caches.match(r).then(hit => {
+      const net = fetch(r).then(res => put(r, res)).catch(() => hit);
+      if (hit) { e.waitUntil(net.then(() => {})); return hit; }
+      return net;
+    }));
   }
 });
 

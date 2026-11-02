@@ -14,12 +14,44 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
 #smokefx{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.6s ease}
 #smokefx.on{opacity:1}
 
-/* header */
-.v2 .brand .bt b.nq{font-size:24px;line-height:1.5;font-weight:700;margin-top:-6px}
-.v2 .brand .bt small{margin-top:-6px}
+/* ---------- header: emerald glass, khatam pattern, gold ornamental rule ---------- */
+.v2 header{border-bottom:0;
+  background:radial-gradient(55% 160% at 50% 0%,rgba(216,178,106,.13),transparent 72%),linear-gradient(180deg,rgba(7,17,12,.93),rgba(9,26,18,.84));
+  box-shadow:0 14px 34px -22px rgba(0,0,0,.95);transition:transform .45s var(--ez),background .5s ease,box-shadow .5s ease}
+.v2 header.top{background:radial-gradient(55% 160% at 50% 0%,rgba(216,178,106,.12),transparent 72%),linear-gradient(180deg,rgba(6,14,10,.62),rgba(6,14,10,.18));box-shadow:none}
+.v2 header:before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--girih) center top/40px 40px;opacity:.1;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
+.v2 header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0,transparent 35%,rgba(255,244,214,.95) 50%,transparent 65%,transparent 100%) 0 0/250% 100% no-repeat,
+             linear-gradient(90deg,transparent,rgba(216,178,106,.3) 14%,#e9c987 50%,rgba(216,178,106,.3) 86%,transparent);
+  animation:hglint 6s 1.2s ease-in-out infinite}
+@keyframes hglint{0%{background-position:160% 0,0 0}55%,100%{background-position:-60% 0,0 0}}
+.v2 header .horn{position:absolute;left:50%;bottom:-7px;width:14px;height:14px;transform:translateX(-50%);pointer-events:none;background:var(--gg);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0-9L2.6-3.6 8.4-4 5.4 1 7 6.6 0 4.6-7 6.6-5.4 1-8.4-4-2.6-3.6Z'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0-9L2.6-3.6 8.4-4 5.4 1 7 6.6 0 4.6-7 6.6-5.4 1-8.4-4-2.6-3.6Z'/%3E%3C/svg%3E") center/contain no-repeat;
+  filter:drop-shadow(0 0 6px rgba(241,215,155,.9));animation:hstar 3.2s ease-in-out infinite}
+.v2 header .horn:before{content:"";position:absolute;inset:-6px}
+@keyframes hstar{50%{transform:translateX(-50%) scale(1.18) rotate(22.5deg);opacity:.85}}
+.v2 header .horn{transition:opacity .5s ease}
+@media(max-width:899px){.v2 header.top .horn{opacity:0}}
+.v2 .hb{position:relative;z-index:1}
+.v2 .mark img{filter:drop-shadow(0 0 10px rgba(216,178,106,.35)) drop-shadow(0 4px 10px rgba(0,0,0,.6))}
+.v2 .hbtn{border-color:rgba(216,178,106,.28);background:linear-gradient(160deg,rgba(216,178,106,.1),rgba(255,255,255,.015));color:var(--gold2);box-shadow:inset 0 1px 0 rgba(255,240,200,.08)}
+.v2 .hnav a:hover{color:var(--gold2);background:rgba(216,178,106,.07)}
+/* brand: keep the Nastaliq name clear of DODARA */
+.v2 .brand .bt{display:flex;flex-direction:column;align-items:flex-end}
+.v2 .brand .bt b.nq{font-size:22px;line-height:1.15;font-weight:700;margin:12px 0 0}
+.v2 .brand .bt small{margin-top:5px}
+/* the hero starts under the header so the top of the page is one continuous scene */
+.v2 .hero{margin-top:calc(-68px - env(safe-area-inset-top));padding-top:calc(68px + env(safe-area-inset-top))}
+@media(min-width:900px){.v2 .hero{min-height:min(100svh,948px);padding-bottom:60px}}
+/* centre the hero content, but never push it up under the header when it is taller than the screen */
+.v2 .hero{align-items:flex-start}
+.v2 .hero-in{margin-block:auto}
+@media(orientation:landscape) and (max-height:540px) and (min-width:600px) and (max-width:899px){.v2 .hero{--sh:calc(100svh - 92px)}}
 
 /* ---------- hero: the arch ---------- */
-.v2 .hero{--sh:clamp(350px,54svh,500px);padding-top:0;
+.v2 .hero{--sh:clamp(350px,54svh,500px);
   background:radial-gradient(50% 34% at 50% 30%,rgba(31,181,125,.15),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(216,178,106,.12),transparent 70%)}
 .v2 .hero:after{display:none}
 .v2 .hero,.v2 .band,.v2 main,.v2 > .band-girih{position:relative;z-index:2}

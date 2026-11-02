@@ -1,8 +1,4 @@
-@font-face{font-family:Vazirmatn;src:url(/assets/fonts/vazirmatn-400.woff2) format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:Vazirmatn;src:url(/assets/fonts/vazirmatn-600.woff2) format("woff2");font-weight:600;font-display:swap}
-@font-face{font-family:Vazirmatn;src:url(/assets/fonts/vazirmatn-700.woff2) format("woff2");font-weight:700;font-display:swap}
-@font-face{font-family:Vazirmatn;src:url(/assets/fonts/vazirmatn-800.woff2) format("woff2");font-weight:800;font-display:swap}
-@font-face{font-family:Vazirmatn;src:url(/assets/fonts/vazirmatn-900.woff2) format("woff2");font-weight:900;font-display:swap}
+@font-face{font-family:Vazirmatn;src:url(/assets/fonts/vazirmatn-var.woff2) format("woff2-variations"),url(/assets/fonts/vazirmatn-var.woff2) format("woff2");font-weight:100 900;font-display:swap}
 @font-face{font-family:Cinzel;src:url(/assets/fonts/cinzel-sub.woff2) format("woff2");font-weight:400 900;font-display:swap;unicode-range:U+30-39,U+41,U+44,U+49,U+4F,U+52}
 /* DODARA — shared style for blog / about pages (matches the storefront theme) */
 :root{--bg:#050605;--bone:#f5f0e6;--txt:#d3cec2;--mute:#a3a095;--gold:#d8b26a;--gold2:#f1d79b;--ink:#1a1206;--em2:#5fe0aa;
