@@ -57,7 +57,7 @@ header.hid{transform:translateY(-105%)}
 
 /* ---------- buttons ---------- */
 .b1{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:16px;font-weight:800;font-size:15px;color:var(--ink);background:var(--gg);box-shadow:0 14px 34px -14px rgba(216,178,106,.75),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -2px 0 rgba(0,0,0,.12);transition:transform .25s var(--ez),box-shadow .25s}
-.b1:after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;z-index:-1;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:shine 5s 2s infinite}
+.b1:after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;z-index:-1;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-150%) skewX(-18deg);animation:shine 5s 2s infinite}
 .b1:hover{transform:translateY(-2px);box-shadow:0 20px 40px -14px rgba(216,178,106,.85),inset 0 1px 0 rgba(255,255,255,.55)}
 .b1 svg.i{width:18px;height:18px;stroke-width:2.2}
 .b2{display:inline-flex;align-items:center;gap:9px;padding:14px 22px;border-radius:16px;font-weight:700;font-size:15px;border:1px solid var(--line2);background:rgba(255,255,255,.03);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .25s,background .25s,transform .25s var(--ez)}
@@ -66,7 +66,7 @@ header.hid{transform:translateY(-105%)}
 .b1:active,.b2:active{transform:scale(.97)}
 .b1[disabled]{opacity:.5;pointer-events:none}
 .full{width:100%;justify-content:center;margin-top:16px}
-@keyframes shine{0%{left:-60%}22%,100%{left:130%}}
+@keyframes shine{0%{transform:translateX(-150%) skewX(-18deg)}22%,100%{transform:translateX(330%) skewX(-18deg)}}
 @keyframes pop{40%{transform:scale(1.25)}}
 
 /* ---------- hero ---------- */
@@ -508,3 +508,18 @@ body:has(.cbar.on) .toast{bottom:calc(156px + env(safe-area-inset-bottom))}
   .cbar{bottom:12px}.np{bottom:12px}
   .toast{bottom:20px}body:has(.cbar.on) .toast{bottom:80px}
 }
+
+/* ---------- smooth scrolling on phones ----------
+   backdrop blur over moving smoke / 3D is re-computed every frame on mobile GPUs: use solid glass instead */
+@media(pointer:coarse){
+  header,nav.bn,.b2,.hint,.mh,.ov{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  nav.bn{background:rgba(11,15,13,.97)}
+  .b2{background:rgba(18,22,20,.9)}
+  .hint{background:rgba(5,6,5,.82)}
+  .mh{background:rgba(13,17,15,.98)}
+  .ov{background:rgba(2,3,2,.84)}
+  body:after{display:none}
+  .aura i{animation:none}
+}
+/* paint-heavy decorative animations pause while the page is being scrolled */
+html.scrolling .h1 em,html.scrolling .pill i,html.scrolling .arrange .dot,html.scrolling .cf:after,html.scrolling .jroute,html.scrolling .skel{animation-play-state:paused}

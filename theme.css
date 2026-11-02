@@ -15,17 +15,17 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
 #smokefx.on{opacity:1}
 
 /* ---------- header: emerald glass, khatam pattern, gold ornamental rule ---------- */
-.v2 header{border-bottom:0;
+.v2 header{border-bottom:0;overflow-x:clip;
   background:radial-gradient(55% 160% at 50% 0%,rgba(216,178,106,.13),transparent 72%),linear-gradient(180deg,rgba(7,17,12,.93),rgba(9,26,18,.84));
   box-shadow:0 14px 34px -22px rgba(0,0,0,.95);transition:transform .45s var(--ez),background .5s ease,box-shadow .5s ease}
 .v2 header.top{background:radial-gradient(55% 160% at 50% 0%,rgba(216,178,106,.12),transparent 72%),linear-gradient(180deg,rgba(6,14,10,.62),rgba(6,14,10,.18));box-shadow:none}
 .v2 header:before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--girih) center top/40px 40px;opacity:.1;
   -webkit-mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
 .v2 header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;pointer-events:none;
-  background:linear-gradient(90deg,transparent 0,transparent 35%,rgba(255,244,214,.95) 50%,transparent 65%,transparent 100%) 0 0/250% 100% no-repeat,
-             linear-gradient(90deg,transparent,rgba(216,178,106,.3) 14%,#e9c987 50%,rgba(216,178,106,.3) 86%,transparent);
-  animation:hglint 6s 1.2s ease-in-out infinite}
-@keyframes hglint{0%{background-position:160% 0,0 0}55%,100%{background-position:-60% 0,0 0}}
+  background:linear-gradient(90deg,transparent,rgba(216,178,106,.3) 14%,#e9c987 50%,rgba(216,178,106,.3) 86%,transparent)}
+.v2 header .hglint{position:absolute;left:0;bottom:0;width:34%;max-width:100%;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,244,214,.95),transparent);transform:translateX(200%);animation:hglint 6s 1.2s ease-in-out infinite}
+@keyframes hglint{0%{transform:translateX(200%)}55%,100%{transform:translateX(-100%)}}
 .v2 header .horn{position:absolute;left:50%;bottom:-7px;width:14px;height:14px;transform:translateX(-50%);pointer-events:none;background:var(--gg);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0-9L2.6-3.6 8.4-4 5.4 1 7 6.6 0 4.6-7 6.6-5.4 1-8.4-4-2.6-3.6Z'/%3E%3C/svg%3E") center/contain no-repeat;
           mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0-9L2.6-3.6 8.4-4 5.4 1 7 6.6 0 4.6-7 6.6-5.4 1-8.4-4-2.6-3.6Z'/%3E%3C/svg%3E") center/contain no-repeat;
@@ -55,7 +55,7 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
   background:radial-gradient(50% 34% at 50% 30%,rgba(31,181,125,.15),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(216,178,106,.12),transparent 70%)}
 .v2 .hero:after{display:none}
 .v2 .hero,.v2 .band,.v2 main,.v2 > .band-girih{position:relative;z-index:2}
-.v2 #gl{position:absolute;inset:auto;left:-12%;top:-20%;width:124%;height:128%;z-index:1;pointer-events:none}
+.v2 #gl{position:absolute;inset:auto;left:-6%;top:-8%;width:112%;height:114%;z-index:1;pointer-events:none}
 .v2 .stage{pointer-events:auto;touch-action:pan-y;cursor:grab;margin-top:6px}
 .v2 .arch{position:absolute;inset:0 0 -2px;width:100%;height:100%;overflow:visible;pointer-events:none}
 .arch-fill{fill:url(#archGlow)}
@@ -177,3 +177,7 @@ body.v2{background:var(--bg) var(--girih-page) 0 0/40px 40px repeat}
   .v2 .arrange{display:none}
   .v2 .stage{margin-top:0}
 }
+
+/* below-the-fold sections are only rendered when they come near the screen */
+.v2 #shop>.sec,.v2 #journey,.v2 #about,.v2 #mag,.v2 #faq,.v2 .seo-txt,.v2 footer{content-visibility:auto;contain-intrinsic-size:auto 700px}
+@supports not (overflow:clip){.v2 header .hglint{display:none}}

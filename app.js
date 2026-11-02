@@ -340,7 +340,14 @@ $("#rPrev").onclick = () => railStep(1);
     else hdr.classList.remove("hid");
     lastY = y;
   };
-  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+  // html.scrolling pauses paint-heavy decorative animations while the page moves
+  let scrolling = false, scrollEnd;
+  const root = document.documentElement;
+  addEventListener("scroll", () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(upd); }
+    if (!scrolling) { scrolling = true; root.classList.add("scrolling"); }
+    clearTimeout(scrollEnd); scrollEnd = setTimeout(() => { scrolling = false; root.classList.remove("scrolling"); }, 180);
+  }, { passive: true });
   upd();
 })();
 

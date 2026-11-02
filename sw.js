@@ -4,7 +4,7 @@
  * - pages: network first, but fall back to the cached page after 3.5 s on a slow connection
  * Bump V on every release: old caches are deleted on activate.
  */
-const V = "dodara-v14";
+const V = "dodara-v15";
 const CORE = ["/", "/assets/fonts/vazirmatn-var.woff2", "/assets/fonts/nastaliq-fa.woff2", "/assets/3d/front.webp?v=2", "/assets/3d/right.webp?v=2", "/assets/3d/back.webp?v=2", "/assets/3d/top.webp?v=2", "/assets/logo-full.webp", "/assets/icon-192.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(V).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));

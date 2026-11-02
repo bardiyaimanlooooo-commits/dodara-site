@@ -91,7 +91,7 @@ async function init() {
   const coarse = matchMedia("(pointer: coarse)").matches;
   const cores = navigator.hardwareConcurrency || 4, mem = navigator.deviceMemory || 4;
   const tier = coarse ? (cores <= 4 || mem <= 2 ? 0 : 1) : 2;
-  const prMax = [1.75, 2.5, 2][tier];
+  const prMax = [1.5, 2, 2][tier];
 
   const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: (devicePixelRatio || 1) < 2, powerPreference: "high-performance", premultipliedAlpha: true });
   renderer.setClearColor(0x000000, 0);
@@ -238,7 +238,10 @@ async function init() {
 
   /* ---------- loop ---------- */
   let last = performance.now(), time = reduce ? 6 : 0, t0 = -1, first = true, perfN = 0, perfT = 0, degrade = 0;
+  const root = document.documentElement; let odd = false;
   function frame(now) {
+    // a phone that has already shown it is struggling renders every other frame while the page scrolls
+    if (degrade >= 2 && root.classList.contains("scrolling") && (odd = !odd)) return;
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     const moving = !reduce || drag || Math.abs(vel - AUTO) > 0.01 || Math.abs(tiltX - tiltT) > 0.001 || Math.abs(openT - openGoal) > 0.001;
     if (!moving && !dirty) return;
@@ -293,12 +296,12 @@ async function init() {
       else if (now - puffT > (coarse ? 120 : 85)) { puffT = now; puff(now, 1); }
     }
 
-    if (!reduce && it > 2.5 && degrade < 6) {
+    // adaptive quality — keeps watching (scrolling on a busy phone included) and only ever steps down
+    if (!reduce && it > 2.5 && degrade < 4) {
       perfT += dt; perfN++;
-      if (perfN >= 60) {
+      if (perfN >= 45) {
         const avg = perfT / perfN; perfN = 0; perfT = 0;
-        if (avg > 0.024) { degrade++; if (pr > 1.5) { pr = Math.max(1.5, pr - 0.5); needLayout = true; } else if (dust.visible) dust.visible = false; else if (pr > 1) { pr = 1; needLayout = true; degrade = 6; } else degrade = 6; }
-        else degrade = 6;
+        if (avg > 0.021) { degrade++; if (pr > 1.25) { pr = Math.max(1, pr - 0.4); needLayout = true; } else if (dust.visible) dust.visible = false; else degrade = 4; }
       }
     }
   }

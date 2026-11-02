@@ -26,8 +26,8 @@ function main() {
 
   const coarse = matchMedia("(pointer: coarse)").matches;
   const CFG = {
-    SIM: 128, DYE: coarse ? 384 : 640,
-    DENSITY_DISSIPATION: 1.15, VELOCITY_DISSIPATION: 0.3, PRESSURE: 0.8, ITER: coarse ? 14 : 20,
+    SIM: coarse ? 96 : 128, DYE: coarse ? 256 : 640,
+    DENSITY_DISSIPATION: 1.15, VELOCITY_DISSIPATION: 0.3, PRESSURE: 0.8, ITER: coarse ? 10 : 20,
     CURL: 30, RADIUS: 0.0026, FORCE: 5200, IDLE_MS: 6500
   };
 
@@ -107,7 +107,7 @@ function main() {
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) throw new Error("fbo");
   }
   function sizeCanvas() {
-    const k = Math.min(1, devicePixelRatio || 1);
+    const k = coarse ? 0.5 : Math.min(1, devicePixelRatio || 1);   // smoke is soft: half resolution is invisible on phones
     canvas.width = Math.round(innerWidth * k); canvas.height = Math.round(innerHeight * k);
   }
   try { sizeCanvas(); init(); } catch (e) { console.warn("[fluid]", e); return; }
@@ -152,12 +152,16 @@ function main() {
     last = { x: e.clientX, y: e.clientY };
   }, { passive: true });
   addEventListener("pointerleave", () => { last = null; });
+  let heroEnd = 0; const measure = () => { heroEnd = hero ? hero.offsetTop + hero.offsetHeight - innerHeight * 0.35 : innerHeight; };
+  measure(); addEventListener("resize", measure);
+  const paintable = () => scrollY < heroEnd;
   let tl = null;
-  addEventListener("touchstart", e => { const t = e.touches[0]; tl = { x: t.clientX, y: t.clientY, t: performance.now() }; push(t.clientX, t.clientY, 0, -6, pick(.09), CFG.RADIUS * 1.2); }, { passive: true });
+  addEventListener("touchstart", e => { if (!paintable()) { tl = null; return; } const t = e.touches[0]; tl = { x: t.clientX, y: t.clientY, t: performance.now() }; push(t.clientX, t.clientY, 0, -6, pick(.09), CFG.RADIUS * 1.2); }, { passive: true });
   addEventListener("touchmove", e => {
-    const t = e.touches[0]; if (!tl) { tl = { x: t.clientX, y: t.clientY }; return; }
+    if (!paintable()) return;
+    const t = e.touches[0]; if (!tl) { tl = { x: t.clientX, y: t.clientY, t: 0 }; return; }
     const dx = t.clientX - tl.x, dy = t.clientY - tl.y, now = performance.now();
-    if (dx * dx + dy * dy > 16 && now - tl.t > 24) { push(t.clientX, t.clientY, dx * 1.3, dy * 1.3, pick(.11)); tl = { x: t.clientX, y: t.clientY, t: now }; }
+    if (dx * dx + dy * dy > 16 && now - tl.t > 40) { push(t.clientX, t.clientY, dx * 1.3, dy * 1.3, pick(.11)); tl = { x: t.clientX, y: t.clientY, t: now }; }
   }, { passive: true });
   addEventListener("touchend", () => { tl = null; }, { passive: true });
 
@@ -191,14 +195,21 @@ function main() {
   }
 
   /* ---------- loop: runs only while there is smoke to move ---------- */
-  let running = false, lastT = 0, activeUntil = 0;
-  function wake() { activeUntil = performance.now() + CFG.IDLE_MS; if (!running && !document.hidden) { running = true; lastT = performance.now(); requestAnimationFrame(loop); } }
+  let running = false, lastT = 0, activeUntil = 0, pN = 0, pT = 0, pLast = 0;
+  function wake() { activeUntil = performance.now() + CFG.IDLE_MS; if (!running && !document.hidden) { running = true; lastT = pLast = performance.now(); pN = pT = 0; requestAnimationFrame(loop); } }
+  const root = document.documentElement; let odd = false;
   function loop(now) {
     if (document.hidden) { running = false; return; }
-    const dt = Math.min(0.0167 * 1.5, (now - lastT) / 1000); lastT = now;
+    // phones: while the page is being scrolled, advance the (slow-moving) smoke every other frame
+    if (coarse && root.classList.contains("scrolling") && (odd = !odd)) { requestAnimationFrame(loop); return; }
+    const dt = Math.min(0.0167 * 2, (now - lastT) / 1000); lastT = now;
     ambient(now);
-    while (queue.length) { const q = queue.shift(); splat(q.x, q.y, q.dx, q.dy, q.color, q.r); }
+    for (let n = 0; queue.length && n < 6; n++) { const q = queue.shift(); splat(q.x, q.y, q.dx, q.dy, q.color, q.r); }
+    if (queue.length > 18) queue.splice(0, queue.length - 18);
     step(dt); render();
+    // self-throttle: if frames get slow, solve fewer pressure iterations
+    pN++; pT += now - pLast; pLast = now;
+    if (pN >= 45) { if (pT / pN > 22 && CFG.ITER > 6) CFG.ITER -= 2; pN = 0; pT = 0; }
     if (now < activeUntil || scrollY < innerHeight * 1.2) requestAnimationFrame(loop);
     else { running = false; gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, canvas.width, canvas.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
   }
