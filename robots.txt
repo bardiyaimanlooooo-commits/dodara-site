@@ -19,3 +19,4 @@ User-agent: Applebot-Extended
 Allow: /
 
 Sitemap: https://dodara.ir/sitemap.xml
+Sitemap: https://dodara.ir/sitemap-pages.xml
